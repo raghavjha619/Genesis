@@ -7,7 +7,7 @@ const Index = () => {
   const [showRules, setShowRules] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-900 to-indigo-700 overflow-hidden relative">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-900 to-indigo-700 overflow-hidden absolute mx-0 px-0 w-full ">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-24 h-24 rounded-full bg-white opacity-5 animate-pulse-soft"></div>
