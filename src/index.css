@@ -1,0 +1,172 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 260 60% 96%;
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 260 85% 60%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 260 20% 92%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 222.2 84% 4.9%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 260 60% 96%;
+    --card: 222.2 84% 10%;
+    --card-foreground: 260 85% 90%;
+    --popover: 222.2 84% 12%;
+    --popover-foreground: 260 85% 90%;
+    --primary: 260 85% 60%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 260 20% 30%;
+    --secondary-foreground: 210 40% 90%;
+    --muted: 210 40% 30%;
+    --muted-foreground: 210 20% 70%;
+    --accent: 210 40% 30%;
+    --accent-foreground: 210 40% 90%;
+    --destructive: 0 84.2% 50.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 40%;
+    --input: 214.3 31.8% 40%;
+    --ring: 260 85% 60%;
+  }
+}
+
+@layer base {
+  * {
+   @apply border-gray-200;
+  }
+
+  body {
+    @apply bg-game-background text-foreground min-h-screen antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    touch-action: manipulation;
+  }
+}
+
+@layer components {
+  .board-point {
+    @apply h-4 w-4 rounded-full bg-white/80 absolute transform -translate-x-1/2 -translate-y-1/2 
+    transition-all duration-300 cursor-pointer hover:bg-white hover:shadow-lg;
+  }
+
+  .board-line {
+    @apply bg-white/80 absolute transform origin-center transition-all duration-300;
+  }
+
+  .piece {
+    @apply h-10 w-10 rounded-full absolute transform -translate-x-1/2 -translate-y-1/2 
+    transition-all duration-300 flex items-center justify-center cursor-pointer shadow-md z-10;
+  }
+  
+  .piece-tiger {
+    @apply bg-game-tiger;
+  }
+  
+  .piece-goat {
+    @apply bg-game-goat;
+  }
+
+  .game-panel {
+    @apply bg-game-panel backdrop-blur-md border border-white/20 rounded-xl px-6 py-3 
+    flex items-center justify-between text-white shadow-lg;
+  }
+  
+  .player-indicator {
+    @apply flex items-center space-x-2 font-medium;
+  }
+  
+  .player-avatar {
+    @apply h-8 w-8 rounded-full flex items-center justify-center;
+  }
+  
+  /* Animations */
+  .animate-pulse-soft {
+    animation: pulse 2s infinite;
+  }
+  
+  .animate-bounce-soft {
+    animation: bounce 1.5s infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in;
+  }
+  
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
