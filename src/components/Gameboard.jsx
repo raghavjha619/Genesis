@@ -6,7 +6,7 @@ import { RefreshCw } from 'lucide-react';
 const BOARD_SIZE = 5;
 const MAX_GOATS = 20;
 const TIGERS_COUNT = 4;
-
+//first commit
 const BOARD_LAYOUT = [
   // Top row
   { position: [0, 0], connections: [[0, 1], [1, 0], [1, 1]] },
