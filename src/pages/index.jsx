@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import GameBoard from  "../components/BaghChal";
+import GameBoard from  "../components/Gameboard";
 import { Button } from '../components/ui/button';
 import { RefreshCw, ArrowLeft, Info } from 'lucide-react';
 
