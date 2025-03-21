@@ -96,16 +96,32 @@
   
   .piece-tiger {
     @apply bg-game-tiger;
+    height: 60px;
+    width: 60px;
   }
   
   .piece-goat {
     @apply bg-game-goat;
+    height: 60px;
+    width: 60px;
   }
 
   .game-panel {
     @apply bg-game-panel backdrop-blur-md border border-white/20 rounded-xl px-6 py-3 
     flex items-center justify-between text-white shadow-lg;
   }
+
+  .game-board {
+    background: url('/assets/parchment-bg.jpg') center center / cover no-repeat;
+    border: 5px solid #ffcc00;
+    box-shadow: 0 0 20px rgba(255, 165, 0, 0.6);
+  }
+  
+  .board-lines {
+    stroke: gold;
+    stroke-width: 3;
+  }
+  
   
   .player-indicator {
     @apply flex items-center space-x-2 font-medium;

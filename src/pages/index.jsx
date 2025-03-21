@@ -7,7 +7,7 @@ const Index = () => {
   const [showRules, setShowRules] = useState(false);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-900 to-indigo-700 overflow-hidden absolute mx-0 px-0 w-full ">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-900 to-indigo-700 absolute mx-0 px-0 w-full  overflow-hidden scrollbar-hide ">
       {/* Background decorative elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-24 h-24 rounded-full bg-white opacity-5 animate-pulse-soft"></div>
@@ -17,31 +17,17 @@ const Index = () => {
 
       {/* Game content */}
       <div className="container px-4 mx-auto relative z-10">
-        {/* Header */}
-        <header className="flex justify-between items-center pt-4 pb-2">
-          <h1 className="text-white font-light text-2xl">Baghchal <span className="text-sm opacity-70">Tiger-Goat Game</span></h1>
-          <div className="flex gap-2">
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              onClick={() => setShowRules(!showRules)}
-              className="text-white hover:bg-white/10 transition-colors"
-            >
-              <Info size={20} />
-            </Button>
-            <Button 
+      <Button 
               variant="ghost" 
               size="icon" 
               onClick={() => window.location.reload()}
-              className="text-white hover:bg-white/10 transition-colors"
+              className="text-white hover:bg-white/10 transition-colors absolute right-10 top-20  "
             >
               <RefreshCw size={20} />
             </Button>
-          </div>
-        </header>
         
         {/* Game board */}
-        <div className="flex justify-center items-center pt-4">
+        <div className="flex justify-center items-center ">
           <GameBoard />
         </div>
 
