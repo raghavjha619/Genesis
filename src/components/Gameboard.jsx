@@ -160,71 +160,71 @@ const GameBoard = () => {
 
     const getPossibleMoves = (position, pieceType) => {
         if (!pieceType) return [];
-    
+
         const [row, col] = position;
         const connections = getConnections(position);
         const diagonalMoves = getDiagonalMoves(position); // New function to get diagonal moves
-    
+
         if (pieceType === 'goat') {
             // Goats can move to adjacent empty positions (both orthogonal and diagonal)
             return [...connections, ...diagonalMoves].filter(([r, c]) => !gameState.board[r][c]);
         } else if (pieceType === 'tiger') {
             const moves = [];
-    
+
             // Tigers can move to adjacent empty positions
             connections.forEach(([r, c]) => {
                 if (!gameState.board[r][c]) {
                     moves.push([r, c]);
                 }
             });
-    
+
             // Tigers can also jump over adjacent goats to empty positions
             const jumpMoves = BOARD_LAYOUT.map(point => point.position)
                 .filter(([r, c]) => {
                     if (gameState.board[r][c]) return false; // Must be empty
-    
+
                     // Check if there's a goat to jump over
                     const middle = getMiddlePosition(position, [r, c]);
                     if (!middle) return false;
-    
+
                     const [middleRow, middleCol] = middle;
                     return gameState.board[middleRow][middleCol] === 'goat';
                 });
-    
+
             return [...moves, ...jumpMoves];
         }
-    
+
         return [];
     };
-    
+
     // Function to get diagonal moves
     const getDiagonalMoves = (position) => {
         const [row, col] = position;
         const diagonalMoves = [];
-    
+
         const possibleDiagonals = [
             [row - 1, col - 1], // Top-left
             [row - 1, col + 1], // Top-right
             [row + 1, col - 1], // Bottom-left
             [row + 1, col + 1]  // Bottom-right
         ];
-    
+
         return possibleDiagonals.filter(([r, c]) => r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE);
     };
-    
+
     // Handle piece selection and movement
     const handlePointClick = (position) => {
         if (gameState.gameOver) return;
-    
+
         const [row, col] = position;
         const pieceAtPosition = gameState.board[row][col];
-    
+
         // If it's goat's turn and all goats haven't been placed yet
         if (gameState.currentPlayer === 'goat' && gameState.goatsPlaced < MAX_GOATS) {
             if (!pieceAtPosition) {
                 const newBoard = [...gameState.board.map(row => [...row])];
                 newBoard[row][col] = 'goat';
-    
+
                 setGameState(prev => ({
                     ...prev,
                     board: newBoard,
@@ -236,12 +236,12 @@ const GameBoard = () => {
             }
             return;
         }
-    
+
         // If a piece is already selected
         if (gameState.selectedPiece) {
             const [selectedRow, selectedCol] = gameState.selectedPiece;
             const selectedPieceType = gameState.board[selectedRow][selectedCol];
-    
+
             if (positionsEqual(position, gameState.selectedPiece)) {
                 setGameState(prev => ({
                     ...prev,
@@ -250,20 +250,20 @@ const GameBoard = () => {
                 }));
                 return;
             }
-    
+
             if (positionInList(position, gameState.possibleMoves)) {
                 const newBoard = [...gameState.board.map(row => [...row])];
-    
+
                 // Move the piece
                 newBoard[row][col] = selectedPieceType;
                 newBoard[selectedRow][selectedCol] = null;
-    
+
                 let goatsCaptured = gameState.goatsCaptured;
-    
+
                 // Check if a tiger captured a goat
                 if (selectedPieceType === 'tiger') {
                     const middle = getMiddlePosition(gameState.selectedPiece, position);
-    
+
                     if (middle) {
                         const [middleRow, middleCol] = middle;
                         if (newBoard[middleRow][middleCol] === 'goat') {
@@ -275,7 +275,7 @@ const GameBoard = () => {
                         }
                     }
                 }
-    
+
                 setGameState(prev => ({
                     ...prev,
                     board: newBoard,
@@ -287,11 +287,11 @@ const GameBoard = () => {
                 return;
             }
         }
-    
+
         // Select a piece if it belongs to the current player
         if (pieceAtPosition === gameState.currentPlayer) {
             const possibleMoves = getPossibleMoves(position, pieceAtPosition);
-    
+
             setGameState(prev => ({
                 ...prev,
                 selectedPiece: position,
@@ -299,7 +299,7 @@ const GameBoard = () => {
             }));
         }
     };
-    
+
 
     // AI move for tiger
     const makeAIMove = () => {
@@ -420,8 +420,8 @@ const GameBoard = () => {
         const [row, col] = position;
 
         // Calculate position based on triangular grid
-        const boardSize = 320; // Size of the board in pixels
-        const margin = 40; // Margin from the edges
+        const boardSize = 640; // Size of the board in pixels
+        const margin = 80; // Margin from the edges
 
         const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
         const y = margin + (row * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
@@ -463,8 +463,10 @@ const GameBoard = () => {
                         }}
                         onClick={() => handlePointClick([row, col])}
                     >
-                        {piece === 'tiger' ? <img src={ravan} alt="ravan" width={40} height={40} /> :
-                                             <img src={hanuman} alt="hanuman" width={40} height={40} />}
+                        {piece === 'tiger' ? <img src={ravan} alt="ravan" className="w-20 h-20" /> :
+                            <img src={hanuman} alt="hanuman" className="w-20 h-20" />
+
+                        }
 
                     </div>
                 )}
@@ -474,60 +476,60 @@ const GameBoard = () => {
 
     // Render board lines
     const renderBoardLines = () => {
-        const boardSize = 320; // Board size in pixels
-        const margin = 40; // Margin from the edges
-    
+        const boardSize = 640; // Board size in pixels
+        const margin = 80; // Margin from the edges
+
         const getPosition = (pos) => {
             const [row, col] = pos;
             const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
             const y = margin + (row * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
             return { x, y };
         };
-    
+
         const lines = [];
         const addedLines = new Set();
-    
+
         BOARD_LAYOUT.forEach(point => {
             const from = getPosition(point.position);
-    
+
             // Add horizontal, vertical, and diagonal connections
             const possibleConnections = [
-                ...point.connections, 
+                ...point.connections,
                 [point.position[0] + 1, point.position[1] + 1], // ↘ Diagonal
                 [point.position[0] + 1, point.position[1] - 1], // ↙ Diagonal
                 [point.position[0] - 1, point.position[1] + 1], // ↗ Diagonal
                 [point.position[0] - 1, point.position[1] - 1]  // ↖ Diagonal
             ];
-    
+
             possibleConnections.forEach(conn => {
                 if (conn[0] < 0 || conn[0] >= BOARD_SIZE || conn[1] < 0 || conn[1] >= BOARD_SIZE) {
                     return; // Ignore out-of-bounds positions
                 }
-    
+
                 const to = getPosition(conn);
                 const lineId = `${point.position.join(',')} -> ${conn.join(',')}`;
-    
+
                 if (!addedLines.has(lineId)) {
                     lines.push(
-                        <line 
-                            key={lineId} 
-                            x1={from.x} y1={from.y} 
-                            x2={to.x} y2={to.y} 
-                            stroke="black" strokeWidth="2" 
+                        <line
+                            key={lineId}
+                            x1={from.x} y1={from.y}
+                            x2={to.x} y2={to.y}
+                            stroke="black" strokeWidth="2"
                         />
                     );
                     addedLines.add(lineId);
                 }
             });
         });
-    
+
         return (
             <svg className="board-lines " width={boardSize} height={boardSize}>
                 {lines}
             </svg>
         );
     };
-    
+
 
     return (
         <div className="flex flex-col items-center justify-between min-h-screen py-8  ">
