@@ -158,60 +158,73 @@ const GameBoard = () => {
         }
     }, [gameState.currentPlayer, gameState.gameOver]);
 
-    // Get possible moves for a piece
     const getPossibleMoves = (position, pieceType) => {
         if (!pieceType) return [];
-
+    
         const [row, col] = position;
         const connections = getConnections(position);
-
+        const diagonalMoves = getDiagonalMoves(position); // New function to get diagonal moves
+    
         if (pieceType === 'goat') {
-            // Goats can only move to adjacent empty positions
-            return connections.filter(([r, c]) => !gameState.board[r][c]);
+            // Goats can move to adjacent empty positions (both orthogonal and diagonal)
+            return [...connections, ...diagonalMoves].filter(([r, c]) => !gameState.board[r][c]);
         } else if (pieceType === 'tiger') {
             const moves = [];
-
+    
             // Tigers can move to adjacent empty positions
             connections.forEach(([r, c]) => {
                 if (!gameState.board[r][c]) {
                     moves.push([r, c]);
                 }
             });
-
+    
             // Tigers can also jump over adjacent goats to empty positions
             const jumpMoves = BOARD_LAYOUT.map(point => point.position)
                 .filter(([r, c]) => {
-                    // Must be empty
-                    if (gameState.board[r][c]) return false;
-
+                    if (gameState.board[r][c]) return false; // Must be empty
+    
                     // Check if there's a goat to jump over
                     const middle = getMiddlePosition(position, [r, c]);
                     if (!middle) return false;
-
+    
                     const [middleRow, middleCol] = middle;
                     return gameState.board[middleRow][middleCol] === 'goat';
                 });
-
+    
             return [...moves, ...jumpMoves];
         }
-
+    
         return [];
     };
-
+    
+    // Function to get diagonal moves
+    const getDiagonalMoves = (position) => {
+        const [row, col] = position;
+        const diagonalMoves = [];
+    
+        const possibleDiagonals = [
+            [row - 1, col - 1], // Top-left
+            [row - 1, col + 1], // Top-right
+            [row + 1, col - 1], // Bottom-left
+            [row + 1, col + 1]  // Bottom-right
+        ];
+    
+        return possibleDiagonals.filter(([r, c]) => r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE);
+    };
+    
     // Handle piece selection and movement
     const handlePointClick = (position) => {
         if (gameState.gameOver) return;
-
+    
         const [row, col] = position;
         const pieceAtPosition = gameState.board[row][col];
-
+    
         // If it's goat's turn and all goats haven't been placed yet
         if (gameState.currentPlayer === 'goat' && gameState.goatsPlaced < MAX_GOATS) {
-            // Place a goat if the position is empty
             if (!pieceAtPosition) {
                 const newBoard = [...gameState.board.map(row => [...row])];
                 newBoard[row][col] = 'goat';
-
+    
                 setGameState(prev => ({
                     ...prev,
                     board: newBoard,
@@ -223,13 +236,12 @@ const GameBoard = () => {
             }
             return;
         }
-
+    
         // If a piece is already selected
         if (gameState.selectedPiece) {
             const [selectedRow, selectedCol] = gameState.selectedPiece;
             const selectedPieceType = gameState.board[selectedRow][selectedCol];
-
-            // If clicking on the same piece, deselect it
+    
             if (positionsEqual(position, gameState.selectedPiece)) {
                 setGameState(prev => ({
                     ...prev,
@@ -238,21 +250,20 @@ const GameBoard = () => {
                 }));
                 return;
             }
-
-            // If clicking on a valid move position
+    
             if (positionInList(position, gameState.possibleMoves)) {
                 const newBoard = [...gameState.board.map(row => [...row])];
-
+    
                 // Move the piece
                 newBoard[row][col] = selectedPieceType;
                 newBoard[selectedRow][selectedCol] = null;
-
+    
                 let goatsCaptured = gameState.goatsCaptured;
-
+    
                 // Check if a tiger captured a goat
                 if (selectedPieceType === 'tiger') {
                     const middle = getMiddlePosition(gameState.selectedPiece, position);
-
+    
                     if (middle) {
                         const [middleRow, middleCol] = middle;
                         if (newBoard[middleRow][middleCol] === 'goat') {
@@ -264,7 +275,7 @@ const GameBoard = () => {
                         }
                     }
                 }
-
+    
                 setGameState(prev => ({
                     ...prev,
                     board: newBoard,
@@ -276,11 +287,11 @@ const GameBoard = () => {
                 return;
             }
         }
-
+    
         // Select a piece if it belongs to the current player
         if (pieceAtPosition === gameState.currentPlayer) {
             const possibleMoves = getPossibleMoves(position, pieceAtPosition);
-
+    
             setGameState(prev => ({
                 ...prev,
                 selectedPiece: position,
@@ -288,6 +299,7 @@ const GameBoard = () => {
             }));
         }
     };
+    
 
     // AI move for tiger
     const makeAIMove = () => {
