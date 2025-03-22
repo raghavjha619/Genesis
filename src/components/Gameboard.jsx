@@ -25,7 +25,7 @@ const BOARD_LAYOUT = [
     { position: [1, 4], connections: [[0, 4], [1, 3], [2, 4]] },
 
     // Middle row
-    { position: [2, 0], connections: [[1, 0], [2, 1], [3, 0],[3,1]] },
+    { position: [2, 0], connections: [[1, 0], [2, 1], [3, 0],[3,1],[1,1]] },
     { position: [2, 1], connections: [[1, 1], [2, 0], [2, 2], [3, 1]] },
     { position: [2, 2], connections: [[1, 1], [1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2], [3, 3]] },
     { position: [2, 3], connections: [[1, 3], [2, 2], [2, 4], [3, 3]] },
@@ -41,7 +41,7 @@ const BOARD_LAYOUT = [
     // Bottom row
     { position: [4, 0], connections: [[3, 0], [3, 1], [4, 1]] },
     { position: [4, 1], connections: [[3, 1], [4, 0], [4, 2]] },
-    { position: [4, 2], connections: [[3, 2], [3, 3], [4, 1], [4, 3]] },
+    { position: [4, 2], connections: [[3, 2], [3, 3], [4, 1], [4, 3],[3,1]] },
     { position: [4, 3], connections: [[3, 3], [4, 2], [4, 4]] },
     { position: [4, 4], connections: [[3, 4], [4, 3],[3,3]] },
 ];

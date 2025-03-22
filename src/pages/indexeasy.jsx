@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import GameBoard from  "../components/Gameboard";
+import HardGame from  "../components/Gameboard.jsx";
+import EasyGame from  "../components/BaghChal.jsx";
 import { Button } from '../components/ui/Button.jsx';
 import { RefreshCw, ArrowLeft, Info } from 'lucide-react';
 
-const Index = () => {
+const Indexeasy = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-900 to-indigo-700 absolute mx-0 px-0 w-full  overflow-hidden scrollbar-hide ">
       {/* Background decorative elements */}
@@ -26,11 +27,11 @@ const Index = () => {
         
         {/* Game board */}
         <div className="flex justify-center items-center ">
-          <GameBoard />
+          <EasyGame />
         </div>
       </div>
     </div>
   );
 };
 
-export default Index;
+export default Indexeasy;
