@@ -6,36 +6,36 @@ import ravan from "../assets/ravan.svg"
 import hanuman from "../assets/hanuman.svg"
 
 const BOARD_SIZE = 5;
-const MAX_GOATS = 16;
-const Ravan_COUNT = 2;
+const MAX_GOATS = 20;
+const Ravan_COUNT = 5;
 //first commit
 const BOARD_LAYOUT = [
     // Top row
     { position: [0, 0], connections: [[0, 1], [1, 0], [1, 1]] },
     { position: [0, 1], connections: [[0, 0], [0, 2], [1, 1]] },
-    { position: [0, 2], connections: [[0, 1], [0, 3], [1, 2]] },
+    { position: [0, 2], connections: [[0, 1], [1,1],[0, 3], [1, 2],[1,3]] },
     { position: [0, 3], connections: [[0, 2], [0, 4], [1, 3]] },
     { position: [0, 4], connections: [[0, 3], [1, 4], [1, 3]] },
 
     // Second row
     { position: [1, 0], connections: [[0, 0], [1, 1], [2, 0]] },
-    { position: [1, 1], connections: [[0, 0], [0, 1], [1, 0], [1, 2], [2, 1], [2, 2]] },
+    { position: [1, 1], connections: [[0, 0], [0, 1], [0, 2], [1, 2], [2, 1],[2,2],[1,0],[2,0]] },
     { position: [1, 2], connections: [[0, 2], [1, 1], [1, 3], [2, 2]] },
-    { position: [1, 3], connections: [[0, 3], [0, 4], [1, 2], [1, 4], [2, 2], [2, 3]] },
+    { position: [1, 3], connections: [[0, 3], [0, 4], [1, 2], [1, 4],[2,4], [2, 2], [2, 3],[0,2]] },
     { position: [1, 4], connections: [[0, 4], [1, 3], [2, 4]] },
 
     // Middle row
-    { position: [2, 0], connections: [[1, 0], [2, 1], [3, 0]] },
+    { position: [2, 0], connections: [[1, 0], [2, 1], [3, 0],[3,1]] },
     { position: [2, 1], connections: [[1, 1], [2, 0], [2, 2], [3, 1]] },
     { position: [2, 2], connections: [[1, 1], [1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2], [3, 3]] },
     { position: [2, 3], connections: [[1, 3], [2, 2], [2, 4], [3, 3]] },
-    { position: [2, 4], connections: [[1, 4], [2, 3], [3, 4]] },
+    { position: [2, 4], connections: [[1, 4],[1,3],[3,3], [2, 3], [3, 4]] },
 
     // Fourth row
     { position: [3, 0], connections: [[2, 0], [3, 1], [4, 0]] },
-    { position: [3, 1], connections: [[2, 1], [2, 2], [3, 0], [3, 2], [4, 0], [4, 1]] },
+    { position: [3, 1], connections: [[2, 1],[2,0],[2, 2], [3, 0], [3, 2], [4, 0], [4, 1],[4,2]] },
     { position: [3, 2], connections: [[2, 2], [3, 1], [3, 3], [4, 2]] },
-    { position: [3, 3], connections: [[2, 2], [2, 3], [3, 2], [3, 4], [4, 2], [4, 3]] },
+    { position: [3, 3], connections: [[2, 2], [2, 3], [3, 2], [3, 4], [4, 2], [4, 3],[2,4],[4,4] ]},
     { position: [3, 4], connections: [[2, 4], [3, 3], [4, 4]] },
 
     // Bottom row
@@ -43,7 +43,7 @@ const BOARD_LAYOUT = [
     { position: [4, 1], connections: [[3, 1], [4, 0], [4, 2]] },
     { position: [4, 2], connections: [[3, 2], [3, 3], [4, 1], [4, 3]] },
     { position: [4, 3], connections: [[3, 3], [4, 2], [4, 4]] },
-    { position: [4, 4], connections: [[3, 4], [4, 3]] },
+    { position: [4, 4], connections: [[3, 4], [4, 3],[3,3]] },
 ];
 
 // Helper function to find connections for a position
@@ -97,8 +97,8 @@ const GameBoard = () => {
 
         // Place Ravan at the corners
         initialBoard[0][0] = 'tiger';
-        // initialBoard[0][4] = 'tiger';
-        // initialBoard[4][0] = 'tiger';
+        initialBoard[0][4] = 'tiger';
+        initialBoard[4][0] = 'tiger';
         initialBoard[4][4] = 'tiger';
 
         setGameState(prev => ({
@@ -198,19 +198,25 @@ const GameBoard = () => {
     };
 
     // Function to get diagonal moves
-    const getDiagonalMoves = (position) => {
-        const [row, col] = position;
-        const diagonalMoves = [];
+ const getDiagonalMoves = (position) => {
+    // Find the current position object in BOARD_LAYOUT
+    const currentNode = BOARD_LAYOUT.find(node =>
+        node.position[0] === position[0] && node.position[1] === position[1]
+    );
 
-        const possibleDiagonals = [
-            [row - 1, col - 1], // Top-left
-            [row - 1, col + 1], // Top-right
-            [row + 1, col - 1], // Bottom-left
-            [row + 1, col + 1]  // Bottom-right
-        ];
+    if (!currentNode) {
+        console.error("Invalid position:", position);
+        return []; // Return empty array if the position is not found
+    }
 
-        return possibleDiagonals.filter(([r, c]) => r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE);
-    };
+    // Filter the connections to include only diagonal moves
+    const diagonalMoves = currentNode.connections.filter(([r, c]) => {
+        const isDiagonal = Math.abs(r - position[0]) === 1 && Math.abs(c - position[1]) === 1;
+        return isDiagonal;
+    });
+
+    return diagonalMoves;
+};
 
     // Handle piece selection and movement
     const handlePointClick = (position) => {
@@ -397,8 +403,8 @@ const GameBoard = () => {
 
         // Place Ravan at the corners
         initialBoard[0][0] = 'tiger';
-        // initialBoard[0][4] = 'tiger';
-        // initialBoard[4][0] = 'tiger';
+        initialBoard[0][4] = 'tiger';
+        initialBoard[4][0] = 'tiger';
         initialBoard[4][4] = 'tiger';
 
         setGameState({
@@ -474,77 +480,76 @@ const GameBoard = () => {
         );
     };
 
-    // Render board lines
     const renderBoardLines = () => {
         const boardSize = 640; // Board size in pixels
         const margin = 80; // Margin from the edges
-
+    
+        // Calculate the exact pixel position on the board for a given row and column
         const getPosition = (pos) => {
             const [row, col] = pos;
             const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
             const y = margin + (row * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
             return { x, y };
         };
-
+    
         const lines = [];
-        const addedLines = new Set();
-
-        BOARD_LAYOUT.forEach(point => {
-            const from = getPosition(point.position);
-
-            // Add horizontal, vertical, and diagonal connections
-            const possibleConnections = [
-                ...point.connections,
-                [point.position[0] + 1, point.position[1] + 1], // ↘ Diagonal
-                [point.position[0] + 1, point.position[1] - 1], // ↙ Diagonal
-                [point.position[0] - 1, point.position[1] + 1], // ↗ Diagonal
-                [point.position[0] - 1, point.position[1] - 1]  // ↖ Diagonal
-            ];
-
-            possibleConnections.forEach(conn => {
-                if (conn[0] < 0 || conn[0] >= BOARD_SIZE || conn[1] < 0 || conn[1] >= BOARD_SIZE) {
-                    return; // Ignore out-of-bounds positions
+        const addedLines = new Set(); // Keep track of drawn lines to avoid duplicates
+    
+        // Draw lines based only on explicitly listed connections in BOARD_LAYOUT
+        BOARD_LAYOUT.forEach((point) => {
+            const from = getPosition(point.position); // Get pixel coordinates of start point
+    
+            point.connections.forEach((conn) => {
+                if (
+                    conn[0] < 0 || conn[0] >= BOARD_SIZE || // Out-of-bounds row check
+                    conn[1] < 0 || conn[1] >= BOARD_SIZE    // Out-of-bounds column check
+                ) {
+                    return; // Skip invalid connections
                 }
-
+    
+                // Compute pixel coordinates for the connection endpoint
                 const to = getPosition(conn);
                 const lineId = `${point.position.join(',')} -> ${conn.join(',')}`;
-
-                if (!addedLines.has(lineId)) {
+    
+                // Only add the line if it hasn't already been added
+                if (!addedLines.has(lineId) && !addedLines.has(`${conn.join(',')} -> ${point.position.join(',')}`)) {
                     lines.push(
                         <>
-                        {/* Outline (Thicker Dark Line) */}
-                        <line
-                            key={`${lineId}-outline`}
-                            x1={from.x} y1={from.y}
-                            x2={to.x} y2={to.y}
-                            stroke="#e39c15" // Black outline
-                            strokeWidth="6" // Make it slightly thicker
-                            strokeLinecap="round"
-                        />
-                        
-                        {/* Main Line */}
-                        <line
-                            key={lineId}
-                            x1={from.x} y1={from.y}
-                            x2={to.x} y2={to.y}
-                            stroke="#fff" // White main line
-                            strokeWidth="2" // Keep it thinner
-                            strokeLinecap="round"
-                        />
-                    </>
+                            {/* Outer line for a thicker "shadowed" effect */}
+                            <line
+                                key={`${lineId}-outline`}
+                                x1={from.x} y1={from.y}
+                                x2={to.x} y2={to.y}
+                                stroke="#e39c15"
+                                strokeWidth="6"
+                                strokeLinecap="round"
+                            />
+    
+                            {/* Main thinner line */}
+                            <line
+                                key={lineId}
+                                x1={from.x} y1={from.y}
+                                x2={to.x} y2={to.y}
+                                stroke="#fff"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                            />
+                        </>
                     );
-                    addedLines.add(lineId);
+                    addedLines.add(lineId); // Prevent this line from being added again
                 }
             });
         });
-
+    
+        // Return the SVG containing all lines
         return (
-            <svg className="board-lines " width={boardSize} height={boardSize}>
+            <svg className="board-lines" width={boardSize} height={boardSize}>
                 {lines}
             </svg>
         );
     };
-
+    
+    
 
     return (
         <div className="flex flex-col items-center h-screen justify-around  py-8  overflow-hidden scrollbar-hide ">

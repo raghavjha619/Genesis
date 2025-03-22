@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import GameBoard from  "../components/Gameboard";
-import { Button } from '../components/ui/button';
+import { Button } from '../components/ui/Button.jsx';
 import { RefreshCw, ArrowLeft, Info } from 'lucide-react';
 
 const Index = () => {
