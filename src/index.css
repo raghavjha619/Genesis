@@ -106,11 +106,6 @@
     width: 60px;
   }
 
-  .game-panel {
-    @apply bg-game-panel backdrop-blur-md border border-white/20 rounded-xl px-6 py-3 
-    flex items-center justify-between text-white shadow-lg;
-  }
-
   .game-board {
     background: url('/assets/parchment-bg.jpg') center center / cover no-repeat;
     border: 5px solid #ffcc00;

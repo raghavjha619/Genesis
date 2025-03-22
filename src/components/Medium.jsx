@@ -4,6 +4,7 @@ import { toast } from 'sonner';
 import { RefreshCw } from 'lucide-react';
 import ravan from "../assets/ravan.svg"
 import hanuman from "../assets/hanuman.svg"
+import innerbutton from "../assets/innerbutton.png"
 
 const BOARD_SIZE = 11;
 const MAX_GOATS = 15;
@@ -11,41 +12,41 @@ const Ravan_COUNT = 3;
 //first commit
 const BOARD_LAYOUT = [
     // Top row
-   
-    { position: [0, 5], connections: [[1, 3],[1,6], [1, 4], [1, 7]] },
+
+    { position: [0, 5], connections: [[1, 3], [1, 6], [1, 4], [1, 7]] },
 
     // Second row
-    { position: [1, 0], connections: [[1,3], [2, 0]] },
-    
-    { position: [1, 3], connections: [ [1,0], [2, 2], [1, 4],[0,5]] },
-    { position: [1, 4], connections: [[0, 5],[1,3], [1, 6], [2, 3]] },
-    { position: [1, 6], connections: [[0, 5], [1, 4], [1, 7],[2,7]] },
-    { position: [1, 7], connections: [[0, 5], [1, 6], [1, 10],[2,8]] },
-    { position: [1, 10], connections: [[1,7], [2, 10]] },
-    
+    { position: [1, 0], connections: [[1, 3], [2, 0]] },
+
+    { position: [1, 3], connections: [[1, 0], [2, 2], [1, 4], [0, 5]] },
+    { position: [1, 4], connections: [[0, 5], [1, 3], [1, 6], [2, 3]] },
+    { position: [1, 6], connections: [[0, 5], [1, 4], [1, 7], [2, 7]] },
+    { position: [1, 7], connections: [[0, 5], [1, 6], [1, 10], [2, 8]] },
+    { position: [1, 10], connections: [[1, 7], [2, 10]] },
+
 
     // Middle row
     { position: [2, 0], connections: [[1, 0], [2, 2], [3, 0]] },
     { position: [2, 2], connections: [[1, 3], [2, 0], [2, 3], [3, 1]] },
-    { position: [2, 3], connections: [[1, 4], [2, 2], [3, 2],[2,7]] },
-    { position: [2, 7], connections: [[1, 6], [2, 8], [3, 8],[2,3]] },
-    { position: [2, 8], connections: [[1, 7],[2,7],[3,9], [2, 10]] },
-    { position: [2, 10], connections: [[1, 10],[2,8],[3,10]] },
+    { position: [2, 3], connections: [[1, 4], [2, 2], [3, 2], [2, 7]] },
+    { position: [2, 7], connections: [[1, 6], [2, 8], [3, 8], [2, 3]] },
+    { position: [2, 8], connections: [[1, 7], [2, 7], [3, 9], [2, 10]] },
+    { position: [2, 10], connections: [[1, 10], [2, 8], [3, 10]] },
 
     // Fourth row
     { position: [3, 0], connections: [[2, 0], [3, 1]] },
-    { position: [3, 1], connections: [[3,0],[4,0],[2, 2], [3, 2]] },
-    { position: [3, 2], connections: [[4,1], [3, 1], [2, 3],[3,8]] },
-    { position: [3, 8], connections: [[2, 7], [3, 9], [4, 9],[3,2]]},
-    { position: [3, 9], connections: [[2, 8], [3, 8], [3,10]] },
+    { position: [3, 1], connections: [[3, 0], [4, 0], [2, 2], [3, 2]] },
+    { position: [3, 2], connections: [[4, 1], [3, 1], [2, 3], [3, 8]] },
+    { position: [3, 8], connections: [[2, 7], [3, 9], [4, 9], [3, 2]] },
+    { position: [3, 9], connections: [[2, 8], [3, 8], [3, 10]] },
     { position: [3, 10], connections: [[2, 10], [3, 9]] },
 
     // Bottom row
-    { position: [4, 0], connections: [ [3, 1], [4, 1]] },
-    { position: [4, 1], connections: [[4,0], [3, 2],[4,9]] },
-    { position: [4, 9], connections: [[3, 8], [4, 10],[4,1]] },
+    { position: [4, 0], connections: [[3, 1], [4, 1]] },
+    { position: [4, 1], connections: [[4, 0], [3, 2], [4, 9]] },
+    { position: [4, 9], connections: [[3, 8], [4, 10], [4, 1]] },
     { position: [4, 10], connections: [[4, 9], [3, 9]] },
-    
+
 ];
 
 // Helper function to find connections for a position
@@ -136,7 +137,7 @@ const Medium = () => {
         initialBoard[0][5] = 'tiger';
         initialBoard[4][0] = 'tiger';
         initialBoard[4][10] = 'tiger';
-        
+
 
         setGameState(prev => ({
             ...prev,
@@ -147,7 +148,7 @@ const Medium = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >=10) {
+        if (gameState.goatsCaptured >= 10) {
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
@@ -235,25 +236,25 @@ const Medium = () => {
     };
 
     // Function to get diagonal moves
- const getDiagonalMoves = (position) => {
-    // Find the current position object in BOARD_LAYOUT
-    const currentNode = BOARD_LAYOUT.find(node =>
-        node.position[0] === position[0] && node.position[1] === position[1]
-    );
+    const getDiagonalMoves = (position) => {
+        // Find the current position object in BOARD_LAYOUT
+        const currentNode = BOARD_LAYOUT.find(node =>
+            node.position[0] === position[0] && node.position[1] === position[1]
+        );
 
-    if (!currentNode) {
-        console.error("Invalid position:", position);
-        return []; // Return empty array if the position is not found
-    }
+        if (!currentNode) {
+            console.error("Invalid position:", position);
+            return []; // Return empty array if the position is not found
+        }
 
-    // Filter the connections to include only diagonal moves
-    const diagonalMoves = currentNode.connections.filter(([r, c]) => {
-        const isDiagonal = Math.abs(r - position[0]) === 1 && Math.abs(c - position[1]) === 1;
-        return isDiagonal;
-    });
+        // Filter the connections to include only diagonal moves
+        const diagonalMoves = currentNode.connections.filter(([r, c]) => {
+            const isDiagonal = Math.abs(r - position[0]) === 1 && Math.abs(c - position[1]) === 1;
+            return isDiagonal;
+        });
 
-    return diagonalMoves;
-};
+        return diagonalMoves;
+    };
 
     // Handle piece selection and movement
     const handlePointClick = (position) => {
@@ -442,7 +443,7 @@ const Medium = () => {
         initialBoard[0][5] = 'tiger';
         initialBoard[4][0] = 'tiger';
         initialBoard[4][10] = 'tiger';
-       
+
 
         setGameState({
             board: initialBoard,
@@ -481,8 +482,8 @@ const Medium = () => {
                 {/* Board point */}
                 <div
                     className={cn(
-                        "board-point",
-                        isPossibleMove && "animate-pulse-soft bg-yellow-300 z-10"
+                        " board-point bg-[#91206ff2] border-2 border-[#E5B84B] w-6 h-6  ",
+                        isPossibleMove && "scale-125 bg-red-700 z-10"
                     )}
                     style={{
                         left: `${x}px`,
@@ -581,42 +582,65 @@ const Medium = () => {
             </svg>
         );
     };
-    
-    
+
+
 
     return (
         <div className="flex flex-col items-center h-screen justify-around  py-8  overflow-hidden scrollbar-hide ">
             <div className='flex gap-16 mb-12'>
                 {/* Computer status panel */}
-                <div className="game-panel w-72 animate-fade-in">
-                    <span className="player-indicator">
-                        <div className="player-avatar bg-blue-500 mr-2">🤖</div>
+                <div className=" w-96 h-[100px]  flex justify-around items-center text-white"
+                    style={{
+                        backgroundImage: `url(${innerbutton})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    }}
+                >
+                    <div className="font-semibold ml-10 ">
                         Computer
-                    </span>
-                    <span className="font-semibold">Killed: {gameState.goatsCaptured}/3</span>
+                    </div>
+                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/10</div>
                 </div>
 
                 {/* Player status panel */}
-                <div className="game-panel w-72  animate-fade-in">
-                    <span className="player-indicator">
-                        <div className="player-avatar bg-green-500 mr-2">👤</div>
+                <div className=" w-96 h-[100px]  flex justify-around items-center text-white"
+                    style={{
+                        backgroundImage: `url(${innerbutton})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    }}>
+                    <div className="font-semibold ml-10 ">
                         You
-                    </span>
-                    <span className="font-semibold">
+                    </div>
+                    <div className="font-semibold mr-10">
                         Remaining: {Math.max(0, MAX_GOATS - gameState.goatsPlaced)}
-                    </span>
+                    </div>
                 </div>
             </div>
 
 
             {/* Game board */}
-            <div className="relative  bg-violet-300 rounded-lg shadow-xl border border-white/20 "
+            <div className="box relative w-auto h-auto bg-[#f5e1c0] rounded-lg shadow-xl"
             >
                 {/* Board lines */}
                 {renderBoardLines()}
 
                 {/* Board points and pieces */}
                 {BOARD_LAYOUT.map(point => renderBoardPoint(point.position))}
+
+
+                    {/* Instructions */}
+            <div className="my-2 text-amber-800 text-base text-center px-4">
+                {gameState.currentPlayer === 'goat' ? (
+                    gameState.goatsPlaced < MAX_GOATS ? (
+                        <p>Place your vanar veer on an empty intersection</p>
+                    ) : (
+                        <p>Select a vanar veer and move it to an adjacent empty intersection</p>
+                    )
+                ) : (
+                    <p>Computer is thinking...</p>
+                )}
+            </div>
 
                 {/* Game over overlay */}
                 {gameState.gameOver && (
@@ -626,7 +650,7 @@ const Medium = () => {
                         </h2>
                         <p className="mb-4">
                             {gameState.winner === 'tiger'
-                                ? "Ravan captured 3 Vanar veer"
+                                ? "Ravan captured 10 Vanar veer"
                                 : "Ravan have been immobilized"}
                         </p>
                         <button
@@ -640,20 +664,6 @@ const Medium = () => {
                 )}
             </div>
 
-
-
-            {/* Instructions */}
-            <div className=" text-white h-40 opacity-100 text-lg max-w-md text-center px-4 mt-8 ">
-                {gameState.currentPlayer === 'goat' ? (
-                    gameState.goatsPlaced < MAX_GOATS ? (
-                        <p>Place your Vanar veer on an empty intersection</p>
-                    ) : (
-                        <p>Select a Vanar veer and move it to an adjacent empty intersection</p>
-                    )
-                ) : (
-                    <p>Computer is thinking...</p>
-                )}
-            </div>
         </div>
     );
 };
