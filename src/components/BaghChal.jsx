@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { cn } from '../lib/util';
+import { cn } from './lib/util';
 import { toast } from 'sonner';
 import { RefreshCw } from 'lucide-react';
 import ravan from "../assets/ravan.svg"
@@ -7,37 +7,37 @@ import hanuman from "../assets/hanuman.svg"
 
 const BOARD_SIZE = 7;
 const MAX_GOATS = 5;
-const TIGERS_COUNT = 1;
+const Ravan_COUNT = 1;
 //first commit
 const BOARD_LAYOUT = [
     // Top row
-   
-   
-    
+
+
+
     { position: [0, 3], connections: [[1, 2], [1, 3], [1, 4]] },
-   
+
 
     // Second row
-   
-   
+
+
     { position: [1, 2], connections: [[0, 3], [1, 3], [2, 1]] },
     { position: [1, 3], connections: [[0, 3], [1, 2], [1, 4], [2, 3]] },
     { position: [1, 4], connections: [[0, 3], [1, 3], [2, 5]] },
 
     // Middle row
-   
-    { position: [2, 1], connections: [ [1, 2], [2, 3], [3, 0]] },
-   
+
+    { position: [2, 1], connections: [[1, 2], [2, 3], [3, 0]] },
+
     { position: [2, 3], connections: [[1, 3], [2, 1], [2, 5], [3, 3]] },
     { position: [2, 5], connections: [[1, 4], [2, 3], [3, 6]] },
 
     // Fourth row
     { position: [3, 0], connections: [[2, 1], [3, 3]] },
-  
-    { position: [3, 3], connections: [ [2, 3], [3, 0], [3, 6]] },
+
+    { position: [3, 3], connections: [[2, 3], [3, 0], [3, 6]] },
     { position: [3, 6], connections: [[2, 5], [3, 3]] },
 
-   
+
 ];
 
 // Helper function to find connections for a position
@@ -71,11 +71,11 @@ const getMiddlePosition = (pos1, pos2) => {
         return [Math.min(pos1[0], pos2[0]) + 1, Math.min(pos1[1], pos2[1]) + 1];
     }
     if (Math.abs(pos1[1] - pos2[1]) === 4 && pos1[0] === pos2[0]) {
-      return [pos1[0],3];
-  }
-  if (Math.abs(pos1[1] - pos2[1]) === 6 && pos1[0] === pos2[0]) {
-    return [pos1[0],3];
-}
+        return [pos1[0], 3];
+    }
+    if (Math.abs(pos1[1] - pos2[1]) === 6 && pos1[0] === pos2[0]) {
+        return [pos1[0], 3];
+    }
     return null;
 };
 
@@ -91,13 +91,13 @@ const BaghChal = () => {
         winner: null,
     });
 
-    // Initialize the board with tigers
+    // Initialize the board with Ravan
     useEffect(() => {
         const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
-        // Place tigers at the corners
+        // Place Ravan at the corners
         initialBoard[0][3] = 'tiger';
-        
+
 
         setGameState(prev => ({
             ...prev,
@@ -108,19 +108,19 @@ const BaghChal = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >= 3) {
+        if (gameState.goatsCaptured >= 2) {
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
                 winner: 'tiger'
             }));
-            toast.success("Tigers win! They captured 5 goats.");
+            toast.success("Ravan win! They captured 5 goats.");
             return;
         }
 
-        // Goat wins if tigers can't move
+        // Goat wins if Ravan can't move
         if (gameState.goatsPlaced === MAX_GOATS) {
-            // Check if tigers can move
+            // Check if Ravan can move
             let tigerCanMove = false;
 
             for (let i = 0; i < BOARD_SIZE; i++) {
@@ -142,7 +142,7 @@ const BaghChal = () => {
                     gameOver: true,
                     winner: 'goat'
                 }));
-                toast.success("Goats win! Tigers are trapped.");
+                toast.success("Goats win! Ravan are trapped.");
             }
         }
     }, [gameState.goatsCaptured, gameState.goatsPlaced, gameState.board]);
@@ -158,83 +158,80 @@ const BaghChal = () => {
 
     const getPossibleMoves = (position, pieceType) => {
         if (!pieceType) return [];
-    
+
         const [row, col] = position;
         const connections = getConnections(position);
         const diagonalMoves = getDiagonalMoves(position); // New function to get diagonal moves
-    
+
         if (pieceType === 'goat') {
             // Goats can move to adjacent empty positions (both orthogonal and diagonal)
             return [...connections, ...diagonalMoves].filter(([r, c]) => !gameState.board[r][c]);
         } else if (pieceType === 'tiger') {
             const moves = [];
-    
-            // Tigers can move to adjacent empty positions
+
+            // Ravan can move to adjacent empty positions
             connections.forEach(([r, c]) => {
                 if (!gameState.board[r][c]) {
                     moves.push([r, c]);
                 }
             });
-    
-            // Tigers can also jump over adjacent goats to empty positions
+
+            // Ravan can also jump over adjacent goats to empty positions
             const jumpMoves = BOARD_LAYOUT.map(point => point.position)
                 .filter(([r, c]) => {
                     if (gameState.board[r][c]) return false; // Must be empty
-    
+
                     // Check if there's a goat to jump over
                     const middle = getMiddlePosition(position, [r, c]);
                     if (!middle) return false;
-    
+
                     const [middleRow, middleCol] = middle;
                     return gameState.board[middleRow][middleCol] === 'goat';
                 });
-    
+
             return [...moves, ...jumpMoves];
         }
-    
+
         return [];
     };
-    
+
     // Function to get diagonal moves
     const getDiagonalMoves = (position) => {
         const [row, col] = position;
         const diagonalMoves = [];
-        if(row==2 && col==3)
-        {
-          return [[2,1],[1,3],[2,5],[3,3]];
+        if (row == 2 && col == 3) {
+            return [[2, 1], [1, 3], [2, 5], [3, 3]];
         }
-        if(row==1 && col==2)
-        {
-          return [[0,3],[2,1],[1,3]];
+        if (row == 1 && col == 2) {
+            return [[0, 3], [2, 1], [1, 3]];
         }
-        if(row==1 && col==4)
-        {
-          return [[0,3],[2,5],[1,3]]
+        if (row == 1 && col == 4) {
+            return [[0, 3], [2, 5], [1, 3]]
         }
-    
+
         const possibleDiagonals = [
             [row - 1, col - 1], // Top-left
             [row - 1, col + 1], // Top-right
             [row + 1, col - 1], // Bottom-left
             [row + 1, col + 1]  // Bottom-right
         ];
-    
+
         return possibleDiagonals.filter(([r, c]) => r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE);
     };
-    
+
     // Handle piece selection and movement
     const handlePointClick = (position) => {
         if (gameState.gameOver) return;
-    
+
         const [row, col] = position;
         const pieceAtPosition = gameState.board[row][col];
-    
+
         // If it's goat's turn and all goats haven't been placed yet
         if (gameState.currentPlayer === 'goat' && gameState.goatsPlaced < MAX_GOATS) {
             if (!pieceAtPosition) {
                 const newBoard = [...gameState.board.map(row => [...row])];
                 newBoard[row][col] = 'goat';
-    
+
                 setGameState(prev => ({
                     ...prev,
                     board: newBoard,
@@ -246,12 +243,12 @@ const BaghChal = () => {
             }
             return;
         }
-    
+
         // If a piece is already selected
         if (gameState.selectedPiece) {
             const [selectedRow, selectedCol] = gameState.selectedPiece;
             const selectedPieceType = gameState.board[selectedRow][selectedCol];
-    
+
             if (positionsEqual(position, gameState.selectedPiece)) {
                 setGameState(prev => ({
                     ...prev,
@@ -260,20 +257,20 @@ const BaghChal = () => {
                 }));
                 return;
             }
-    
+
             if (positionInList(position, gameState.possibleMoves)) {
                 const newBoard = [...gameState.board.map(row => [...row])];
-    
+
                 // Move the piece
                 newBoard[row][col] = selectedPieceType;
                 newBoard[selectedRow][selectedCol] = null;
-    
+
                 let goatsCaptured = gameState.goatsCaptured;
-    
+
                 // Check if a tiger captured a goat
                 if (selectedPieceType === 'tiger') {
                     const middle = getMiddlePosition(gameState.selectedPiece, position);
-    
+
                     if (middle) {
                         const [middleRow, middleCol] = middle;
                         if (newBoard[middleRow][middleCol] === 'goat') {
@@ -285,7 +282,7 @@ const BaghChal = () => {
                         }
                     }
                 }
-    
+
                 setGameState(prev => ({
                     ...prev,
                     board: newBoard,
@@ -297,11 +294,11 @@ const BaghChal = () => {
                 return;
             }
         }
-    
+
         // Select a piece if it belongs to the current player
         if (pieceAtPosition === gameState.currentPlayer) {
             const possibleMoves = getPossibleMoves(position, pieceAtPosition);
-    
+
             setGameState(prev => ({
                 ...prev,
                 selectedPiece: position,
@@ -309,17 +306,17 @@ const BaghChal = () => {
             }));
         }
     };
-    
+
 
     // AI move for tiger
     const makeAIMove = () => {
-        // Find all tigers
-        const tigers = [];
+        // Find all Ravan
+        const Ravan = [];
 
         for (let i = 0; i < BOARD_SIZE; i++) {
             for (let j = 0; j < BOARD_SIZE; j++) {
                 if (gameState.board[i][j] === 'tiger') {
-                    tigers.push([i, j]);
+                    Ravan.push([i, j]);
                 }
             }
         }
@@ -327,7 +324,7 @@ const BaghChal = () => {
         // Prioritize moves that capture goats
         let bestMove = null;
 
-        for (const tiger of tigers) {
+        for (const tiger of Ravan) {
             const possibleMoves = getPossibleMoves(tiger, 'tiger');
 
             for (const move of possibleMoves) {
@@ -347,12 +344,12 @@ const BaghChal = () => {
 
         // If no capturing move, choose a random move
         if (!bestMove) {
-            const movableTigers = tigers.filter(tiger =>
+            const movableRavan = Ravan.filter(tiger =>
                 getPossibleMoves(tiger, 'tiger').length > 0
             );
 
-            if (movableTigers.length > 0) {
-                const randomTiger = movableTigers[Math.floor(Math.random() * movableTigers.length)];
+            if (movableRavan.length > 0) {
+                const randomTiger = movableRavan[Math.floor(Math.random() * movableRavan.length)];
                 const moves = getPossibleMoves(randomTiger, 'tiger');
                 const randomMove = moves[Math.floor(Math.random() * moves.length)];
 
@@ -391,38 +388,42 @@ const BaghChal = () => {
                 goatsCaptured
             }));
         } else {
-            // No valid move for tigers
+            // No valid move for Ravan
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
                 winner: 'goat'
             }));
-            toast.success("Goats win! Tigers are trapped.");
+            toast.success("Goats win! Ravan are trapped.");
         }
     };
 
     // Reset game
     const resetGame = () => {
-        const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
-
-        // Place tigers at the corners
-        initialBoard[0][0] = 'tiger';
-        initialBoard[0][4] = 'tiger';
-        initialBoard[4][0] = 'tiger';
-        initialBoard[4][4] = 'tiger';
-
-        setGameState({
-            board: initialBoard,
-            currentPlayer: 'goat',
-            selectedPiece: null,
-            goatsPlaced: 0,
-            goatsCaptured: 0,
-            possibleMoves: [],
-            gameOver: false,
-            winner: null
-        });
-
-        toast("Game reset!");
+        setGameState(prevState => ({
+            ...prevState,
+            gameOver: false // Set gameOver false first to trigger re-render
+        }));
+    
+        setTimeout(() => {
+            const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
+    
+            // Place Ravan's tigers at all four corners
+            initialBoard[0][3] = 'tiger';
+    
+            setGameState({
+                board: initialBoard,
+                currentPlayer: 'goat',
+                selectedPiece: null,
+                goatsPlaced: 0,
+                goatsCaptured: 0,
+                possibleMoves: [],
+                gameOver: false,
+                winner: null
+            });
+    
+            toast("🔄 Game reset! Get ready for battle!");
+        }, 10); // Small delay to ensure re-render
     };
 
     // Render board point
@@ -431,7 +432,7 @@ const BaghChal = () => {
 
         // Calculate position based on triangular grid
         const boardSize = 640; // Size of the board in pixels
-        const margin = 40; 
+        const margin = 40;
         const verticalStretchFactor = 2;// Margin from the edges
 
         const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
@@ -475,7 +476,7 @@ const BaghChal = () => {
                         onClick={() => handlePointClick([row, col])}
                     >
                         {piece === 'tiger' ? <img src={ravan} alt="ravan" width={40} height={40} /> :
-                                             <img src={hanuman} alt="hanuman" width={40} height={40} />}
+                            <img src={hanuman} alt="hanuman" width={40} height={40} />}
 
                     </div>
                 )}
@@ -486,9 +487,9 @@ const BaghChal = () => {
     // Render board lines
     const renderBoardLines = () => {
         const boardSize = 640; // Board size in pixels
-        const margin = 40; 
+        const margin = 40;
         const verticalStretchFactor = 2;// Margin from the edges
-    
+
         // Convert board position (like [2, 3]) to pixel position for SVG placement.
         const getPosition = (pos) => {
             const [row, col] = pos;
@@ -496,40 +497,52 @@ const BaghChal = () => {
             const y = margin + (row * (boardSize - 2 * margin) * verticalStretchFactor / (BOARD_SIZE - 1));
             return { x, y };
         };
-    
+
         const lines = [];
         const addedLines = new Set(); // Prevent duplicate connections
-    
+
         // Iterate through BOARD_LAYOUT to draw connections between points
         BOARD_LAYOUT.forEach(point => {
             const from = getPosition(point.position);
-    
+
             // Loop through the connections defined for the current point
             point.connections.forEach(conn => {
                 if (conn[0] < 0 || conn[0] >= BOARD_SIZE || conn[1] < 0 || conn[1] >= BOARD_SIZE) {
                     return; // Skip out-of-bound connections
                 }
-    
+
                 const to = getPosition(conn);
                 const lineId = `${point.position.join(',')} -> ${conn.join(',')}`;
-    
+
                 if (!addedLines.has(lineId)) {
                     lines.push(
-                        <line
-                            key={lineId}
-                            x1={from.x}
-                            y1={from.y}
-                            x2={to.x}
-                            y2={to.y}
-                            stroke="black"
-                            strokeWidth="2"
-                        />
+                        <>
+                            {/* Outline (Thicker Dark Line) */}
+                            <line
+                                key={`${lineId}-outline`}
+                                x1={from.x} y1={from.y}
+                                x2={to.x} y2={to.y}
+                                stroke="#e39c15" // Black outline
+                                strokeWidth="6" // Make it slightly thicker
+                                strokeLinecap="round"
+                            />
+
+                            {/* Main Line */}
+                            <line
+                                key={lineId}
+                                x1={from.x} y1={from.y}
+                                x2={to.x} y2={to.y}
+                                stroke="#fff" // White main line
+                                strokeWidth="2" // Keep it thinner
+                                strokeLinecap="round"
+                            />
+                        </>
                     );
                     addedLines.add(lineId); // Track the connection to avoid duplicates
                 }
             });
         });
-    
+
         // Return the SVG element containing all the drawn lines
         return (
             <svg className="board-lines" width={boardSize} height={boardSize}>
@@ -537,17 +550,30 @@ const BaghChal = () => {
             </svg>
         );
     };
-    
+
 
     return (
         <div className="flex flex-col items-center justify-between min-h-screen py-8  ">
-            {/* Computer status panel */}
-            <div className="game-panel w-80 mb-8 animate-fade-in">
-                <span className="player-indicator">
-                    <div className="player-avatar bg-blue-500 mr-2">🤖</div>
-                    Computer
-                </span>
-                <span className="font-semibold">Killed: {gameState.goatsCaptured}/5</span>
+            <div className='flex gap-16 mb-12'>
+                {/* Computer status panel */}
+                <div className="game-panel w-72 animate-fade-in">
+                    <span className="player-indicator">
+                        <div className="player-avatar bg-blue-500 mr-2">🤖</div>
+                        Computer
+                    </span>
+                    <span className="font-semibold">Killed: {gameState.goatsCaptured}/2</span>
+                </div>
+
+                {/* Player status panel */}
+                <div className="game-panel w-72  animate-fade-in">
+                    <span className="player-indicator">
+                        <div className="player-avatar bg-green-500 mr-2">👤</div>
+                        You
+                    </span>
+                    <span className="font-semibold">
+                        Remaining: {Math.max(0, MAX_GOATS - gameState.goatsPlaced)}
+                    </span>
+                </div>
             </div>
 
             {/* Game board */}
@@ -564,12 +590,12 @@ const BaghChal = () => {
                 {gameState.gameOver && (
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center flex-col text-white rounded-lg animate-scale-in z-[9999] ">
                         <h2 className="text-2xl font-bold mb-4 ">
-                            {gameState.winner === 'tiger' ? "Tigers Win!" : "Goats Win!"}
+                            {gameState.winner === 'tiger' ? "Ravan Win!" : "Vanar Veer Win!"}
                         </h2>
                         <p className="mb-4">
                             {gameState.winner === 'tiger'
-                                ? "Tigers captured 5 goats"
-                                : "Tigers have been immobilized"}
+                                ? "Ravan captured 2 Vanar Veer"
+                                : "Ravan have been immobilized"}
                         </p>
                         <button
                             className="flex items-center space-x-2 bg-green-500 text-game-background px-4 py-2 rounded-full hover:bg-opacity-90 transition-colors"
@@ -582,24 +608,13 @@ const BaghChal = () => {
                 )}
             </div>
 
-            {/* Player status panel */}
-            <div className="game-panel w-80 mt-8 animate-fade-in">
-                <span className="player-indicator">
-                    <div className="player-avatar bg-green-500 mr-2">👤</div>
-                    You
-                </span>
-                <span className="font-semibold">
-                    Remaining: {Math.max(0, MAX_GOATS - gameState.goatsPlaced)}
-                </span>
-            </div>
-
             {/* Instructions */}
             <div className="mt-8 text-white opacity-70 text-sm max-w-md text-center px-4">
                 {gameState.currentPlayer === 'goat' ? (
                     gameState.goatsPlaced < MAX_GOATS ? (
-                        <p>Place your goat on an empty intersection</p>
+                        <p>Place your vanar veer on an empty intersection</p>
                     ) : (
-                        <p>Select a goat and move it to an adjacent empty intersection</p>
+                        <p>Select a vanar veer and move it to an adjacent empty intersection</p>
                     )
                 ) : (
                     <p>Computer is thinking...</p>
