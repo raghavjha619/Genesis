@@ -2,6 +2,9 @@
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    fontFamily: {
+      Inter: [ "Inter"],
+    },
     extend: {
       colors: {
         border: "hsl(214.3, 31.8%, 91.4%)", // Same as the CSS variable
