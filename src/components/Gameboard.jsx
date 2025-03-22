@@ -6,8 +6,8 @@ import ravan from "../assets/ravan.svg"
 import hanuman from "../assets/hanuman.svg"
 
 const BOARD_SIZE = 5;
-const MAX_GOATS = 20;
-const TIGERS_COUNT = 4;
+const MAX_GOATS = 16;
+const Ravan_COUNT = 2;
 //first commit
 const BOARD_LAYOUT = [
     // Top row
@@ -91,14 +91,14 @@ const GameBoard = () => {
         winner: null,
     });
 
-    // Initialize the board with tigers
+    // Initialize the board with Ravan
     useEffect(() => {
         const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
-        // Place tigers at the corners
+        // Place Ravan at the corners
         initialBoard[0][0] = 'tiger';
-        initialBoard[0][4] = 'tiger';
-        initialBoard[4][0] = 'tiger';
+        // initialBoard[0][4] = 'tiger';
+        // initialBoard[4][0] = 'tiger';
         initialBoard[4][4] = 'tiger';
 
         setGameState(prev => ({
@@ -110,19 +110,19 @@ const GameBoard = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >= 5) {
+        if (gameState.goatsCaptured >=3) {
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
                 winner: 'tiger'
             }));
-            toast.success("Tigers win! They captured 5 goats.");
+            toast.success("Ravan win! They captured 3 vanar veer.");
             return;
         }
 
-        // Goat wins if tigers can't move
+        // Goat wins if Ravan can't move
         if (gameState.goatsPlaced === MAX_GOATS) {
-            // Check if tigers can move
+            // Check if Ravan can move
             let tigerCanMove = false;
 
             for (let i = 0; i < BOARD_SIZE; i++) {
@@ -144,7 +144,7 @@ const GameBoard = () => {
                     gameOver: true,
                     winner: 'goat'
                 }));
-                toast.success("Goats win! Tigers are trapped.");
+                toast.success("Goats win! Ravan are trapped.");
             }
         }
     }, [gameState.goatsCaptured, gameState.goatsPlaced, gameState.board]);
@@ -171,14 +171,14 @@ const GameBoard = () => {
         } else if (pieceType === 'tiger') {
             const moves = [];
 
-            // Tigers can move to adjacent empty positions
+            // Ravan can move to adjacent empty positions
             connections.forEach(([r, c]) => {
                 if (!gameState.board[r][c]) {
                     moves.push([r, c]);
                 }
             });
 
-            // Tigers can also jump over adjacent goats to empty positions
+            // Ravan can also jump over adjacent goats to empty positions
             const jumpMoves = BOARD_LAYOUT.map(point => point.position)
                 .filter(([r, c]) => {
                     if (gameState.board[r][c]) return false; // Must be empty
@@ -303,13 +303,13 @@ const GameBoard = () => {
 
     // AI move for tiger
     const makeAIMove = () => {
-        // Find all tigers
-        const tigers = [];
+        // Find all Ravan
+        const Ravan = [];
 
         for (let i = 0; i < BOARD_SIZE; i++) {
             for (let j = 0; j < BOARD_SIZE; j++) {
                 if (gameState.board[i][j] === 'tiger') {
-                    tigers.push([i, j]);
+                    Ravan.push([i, j]);
                 }
             }
         }
@@ -317,7 +317,7 @@ const GameBoard = () => {
         // Prioritize moves that capture goats
         let bestMove = null;
 
-        for (const tiger of tigers) {
+        for (const tiger of Ravan) {
             const possibleMoves = getPossibleMoves(tiger, 'tiger');
 
             for (const move of possibleMoves) {
@@ -337,12 +337,12 @@ const GameBoard = () => {
 
         // If no capturing move, choose a random move
         if (!bestMove) {
-            const movableTigers = tigers.filter(tiger =>
+            const movableRavan = Ravan.filter(tiger =>
                 getPossibleMoves(tiger, 'tiger').length > 0
             );
 
-            if (movableTigers.length > 0) {
-                const randomTiger = movableTigers[Math.floor(Math.random() * movableTigers.length)];
+            if (movableRavan.length > 0) {
+                const randomTiger = movableRavan[Math.floor(Math.random() * movableRavan.length)];
                 const moves = getPossibleMoves(randomTiger, 'tiger');
                 const randomMove = moves[Math.floor(Math.random() * moves.length)];
 
@@ -381,13 +381,13 @@ const GameBoard = () => {
                 goatsCaptured
             }));
         } else {
-            // No valid move for tigers
+            // No valid move for Ravan
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
                 winner: 'goat'
             }));
-            toast.success("Goats win! Tigers are trapped.");
+            toast.success("Goats win! Ravan are trapped.");
         }
     };
 
@@ -395,10 +395,10 @@ const GameBoard = () => {
     const resetGame = () => {
         const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
-        // Place tigers at the corners
+        // Place Ravan at the corners
         initialBoard[0][0] = 'tiger';
-        initialBoard[0][4] = 'tiger';
-        initialBoard[4][0] = 'tiger';
+        // initialBoard[0][4] = 'tiger';
+        // initialBoard[4][0] = 'tiger';
         initialBoard[4][4] = 'tiger';
 
         setGameState({
@@ -454,7 +454,7 @@ const GameBoard = () => {
                         className={cn(
                             "piece",
                             piece === 'tiger' ? "piece-tiger" : "piece-goat",
-                            isSelected && "shadow-lg ring-2 ring-yellow-300 ring-offset-2 ring-offset-transparent animate-bounce-soft"
+                            isSelected && "shadow-lg ring-2 ring-yellow-400 ring-offset-2 ring-offset-transparent animate-bounce-soft"
                         )}
                         style={{
                             left: `${x}px`,
@@ -511,12 +511,27 @@ const GameBoard = () => {
 
                 if (!addedLines.has(lineId)) {
                     lines.push(
+                        <>
+                        {/* Outline (Thicker Dark Line) */}
+                        <line
+                            key={`${lineId}-outline`}
+                            x1={from.x} y1={from.y}
+                            x2={to.x} y2={to.y}
+                            stroke="#e39c15" // Black outline
+                            strokeWidth="6" // Make it slightly thicker
+                            strokeLinecap="round"
+                        />
+                        
+                        {/* Main Line */}
                         <line
                             key={lineId}
                             x1={from.x} y1={from.y}
                             x2={to.x} y2={to.y}
-                            stroke="black" strokeWidth="2"
+                            stroke="#fff" // White main line
+                            strokeWidth="2" // Keep it thinner
+                            strokeLinecap="round"
                         />
+                    </>
                     );
                     addedLines.add(lineId);
                 }
@@ -532,19 +547,32 @@ const GameBoard = () => {
 
 
     return (
-        <div className="flex flex-col items-center justify-between min-h-screen py-8  ">
-            {/* Computer status panel */}
-            <div className="game-panel w-80 mb-8 animate-fade-in">
-                <span className="player-indicator">
-                    <div className="player-avatar bg-blue-500 mr-2">🤖</div>
-                    Computer
-                </span>
-                <span className="font-semibold">Killed: {gameState.goatsCaptured}/5</span>
+        <div className="flex flex-col items-center h-screen justify-around  py-8  overflow-hidden scrollbar-hide ">
+            <div className='flex gap-16 mb-12'>
+                {/* Computer status panel */}
+                <div className="game-panel w-72 animate-fade-in">
+                    <span className="player-indicator">
+                        <div className="player-avatar bg-blue-500 mr-2">🤖</div>
+                        Computer
+                    </span>
+                    <span className="font-semibold">Killed: {gameState.goatsCaptured}/3</span>
+                </div>
+
+                {/* Player status panel */}
+                <div className="game-panel w-72  animate-fade-in">
+                    <span className="player-indicator">
+                        <div className="player-avatar bg-green-500 mr-2">👤</div>
+                        You
+                    </span>
+                    <span className="font-semibold">
+                        Remaining: {Math.max(0, MAX_GOATS - gameState.goatsPlaced)}
+                    </span>
+                </div>
             </div>
 
+
             {/* Game board */}
-            <div
-                className="relative w-auto h-auto bg-violet-300 rounded-lg shadow-xl border border-white/20 "
+            <div className="relative  bg-violet-300 rounded-lg shadow-xl border border-white/20 "
             >
                 {/* Board lines */}
                 {renderBoardLines()}
@@ -556,12 +584,12 @@ const GameBoard = () => {
                 {gameState.gameOver && (
                     <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center flex-col text-white rounded-lg animate-scale-in z-[9999] ">
                         <h2 className="text-2xl font-bold mb-4 ">
-                            {gameState.winner === 'tiger' ? "Tigers Win!" : "Goats Win!"}
+                            {gameState.winner === 'tiger' ? "Ravan Win!" : "Vanar veers Win!"}
                         </h2>
                         <p className="mb-4">
                             {gameState.winner === 'tiger'
-                                ? "Tigers captured 5 goats"
-                                : "Tigers have been immobilized"}
+                                ? "Ravan captured 3 Vanar veer"
+                                : "Ravan have been immobilized"}
                         </p>
                         <button
                             className="flex items-center space-x-2 bg-green-500 text-game-background px-4 py-2 rounded-full hover:bg-opacity-90 transition-colors"
@@ -574,24 +602,15 @@ const GameBoard = () => {
                 )}
             </div>
 
-            {/* Player status panel */}
-            <div className="game-panel w-80 mt-8 animate-fade-in">
-                <span className="player-indicator">
-                    <div className="player-avatar bg-green-500 mr-2">👤</div>
-                    You
-                </span>
-                <span className="font-semibold">
-                    Remaining: {Math.max(0, MAX_GOATS - gameState.goatsPlaced)}
-                </span>
-            </div>
+
 
             {/* Instructions */}
-            <div className="mt-8 text-white opacity-70 text-sm max-w-md text-center px-4">
+            <div className=" text-white h-40 opacity-100 text-lg max-w-md text-center px-4 mt-8 ">
                 {gameState.currentPlayer === 'goat' ? (
                     gameState.goatsPlaced < MAX_GOATS ? (
-                        <p>Place your goat on an empty intersection</p>
+                        <p>Place your Vanar veer on an empty intersection</p>
                     ) : (
-                        <p>Select a goat and move it to an adjacent empty intersection</p>
+                        <p>Select a Vanar veer and move it to an adjacent empty intersection</p>
                     )
                 ) : (
                     <p>Computer is thinking...</p>

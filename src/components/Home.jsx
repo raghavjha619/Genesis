@@ -5,9 +5,9 @@ import Heading from "../assets/Group2.svg";
 import Play from "../assets/Play.svg";
 import Setting from "../assets/Setting.svg";
 import RulesIcon from "../assets/Rules.svg";
-import Example1 from "../assets/example1.jpg"; 
-import NewVanarveer from "../assets/new-monkey.jpg"; 
-import { Button } from "../components/ui/button";
+// import Example1 from "../assets/example1.jpg"; 
+// import NewVanarveer from "../assets/new-monkey.jpg"; 
+import { Button } from "./ui/Button";
 import { ArrowLeft } from "lucide-react";
 
 const Home = () => {
@@ -83,9 +83,9 @@ const Home = () => {
                             <div className="mt-4">
                                 <h3 className="font-semibold text-lg">Examples</h3>
                                 <p>Example 1: A Ravan capturing a Vanarveer</p>
-                                <img src={Example1} alt="Example 1" className="w-full my-2 rounded" />
+                                {/* <img src={Example1} alt="Example 1" className="w-full my-2 rounded" /> */}
                                 <p>Example 2: Vanarveers blocking a Ravan</p>
-                                <img src={NewVanarveer} alt="Updated Vanarveer" className="w-full my-2 rounded" />
+                                {/* <img src={NewVanarveer} alt="Updated Vanarveer" className="w-full my-2 rounded" /> */}
                             </div>
                         </div>
                         <Button 
