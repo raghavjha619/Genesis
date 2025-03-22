@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { cn } from '../lib/util';
+import { cn } from '../components/lib/util';
 import { toast } from 'sonner';
 import { RefreshCw } from 'lucide-react';
 import ravan from "../assets/ravan.svg"

@@ -5,7 +5,7 @@ import { RefreshCw } from 'lucide-react';
 import ravan from "../assets/ravan.svg"
 import hanuman from "../assets/hanuman.svg"
 
-const BOARD_SIZE = 6;
+const BOARD_SIZE = 7;
 const MAX_GOATS = 5;
 const TIGERS_COUNT = 1;
 //first commit
@@ -14,19 +14,19 @@ const BOARD_LAYOUT = [
    
    
     
-    { position: [0, 3], connections: [[1, 2], [1, 4], [1, 3]] },
+    { position: [0, 3], connections: [[1, 2], [1, 3], [1, 4]] },
    
 
     // Second row
    
    
-    { position: [1, 2], connections: [[0, 3], [2, 1], [1, 3]] },
+    { position: [1, 2], connections: [[0, 3], [1, 3], [2, 1]] },
     { position: [1, 3], connections: [[0, 3], [1, 2], [1, 4], [2, 3]] },
     { position: [1, 4], connections: [[0, 3], [1, 3], [2, 5]] },
 
     // Middle row
    
-    { position: [2, 1], connections: [ [2, 3], [2, 2], [3, 0]] },
+    { position: [2, 1], connections: [ [1, 2], [2, 3], [3, 0]] },
    
     { position: [2, 3], connections: [[1, 3], [2, 1], [2, 5], [3, 3]] },
     { position: [2, 5], connections: [[1, 4], [2, 3], [3, 6]] },
@@ -70,6 +70,12 @@ const getMiddlePosition = (pos1, pos2) => {
     if (Math.abs(pos1[0] - pos2[0]) === 2 && Math.abs(pos1[1] - pos2[1]) === 2) {
         return [Math.min(pos1[0], pos2[0]) + 1, Math.min(pos1[1], pos2[1]) + 1];
     }
+    if (Math.abs(pos1[1] - pos2[1]) === 4 && pos1[0] === pos2[0]) {
+      return [pos1[0],3];
+  }
+  if (Math.abs(pos1[1] - pos2[1]) === 6 && pos1[0] === pos2[0]) {
+    return [pos1[0],3];
+}
     return null;
 };
 
@@ -193,6 +199,18 @@ const BaghChal = () => {
     const getDiagonalMoves = (position) => {
         const [row, col] = position;
         const diagonalMoves = [];
+        if(row==2 && col==3)
+        {
+          return [[2,1],[1,3],[2,5],[3,3]];
+        }
+        if(row==1 && col==2)
+        {
+          return [[0,3],[2,1],[1,3]];
+        }
+        if(row==1 && col==4)
+        {
+          return [[0,3],[2,5],[1,3]]
+        }
     
         const possibleDiagonals = [
             [row - 1, col - 1], // Top-left
@@ -412,11 +430,12 @@ const BaghChal = () => {
         const [row, col] = position;
 
         // Calculate position based on triangular grid
-        const boardSize = 320; // Size of the board in pixels
-        const margin = 40; // Margin from the edges
+        const boardSize = 640; // Size of the board in pixels
+        const margin = 40; 
+        const verticalStretchFactor = 2;// Margin from the edges
 
         const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
-        const y = margin + (row * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
+        const y = margin + (row * (boardSize - 2 * margin) * verticalStretchFactor / (BOARD_SIZE - 1));
 
         const piece = gameState.board[row][col];
         const isSelected = gameState.selectedPiece &&
@@ -466,34 +485,29 @@ const BaghChal = () => {
 
     // Render board lines
     const renderBoardLines = () => {
-        const boardSize = 320; // Board size in pixels
-        const margin = 40; // Margin from the edges
+        const boardSize = 640; // Board size in pixels
+        const margin = 40; 
+        const verticalStretchFactor = 2;// Margin from the edges
     
+        // Convert board position (like [2, 3]) to pixel position for SVG placement.
         const getPosition = (pos) => {
             const [row, col] = pos;
             const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
-            const y = margin + (row * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
+            const y = margin + (row * (boardSize - 2 * margin) * verticalStretchFactor / (BOARD_SIZE - 1));
             return { x, y };
         };
     
         const lines = [];
-        const addedLines = new Set();
+        const addedLines = new Set(); // Prevent duplicate connections
     
+        // Iterate through BOARD_LAYOUT to draw connections between points
         BOARD_LAYOUT.forEach(point => {
             const from = getPosition(point.position);
     
-            // Add horizontal, vertical, and diagonal connections
-            const possibleConnections = [
-                ...point.connections, 
-                [point.position[0] + 1, point.position[1] + 1], // ↘ Diagonal
-                [point.position[0] + 1, point.position[1] - 1], // ↙ Diagonal
-                [point.position[0] - 1, point.position[1] + 1], // ↗ Diagonal
-                [point.position[0] - 1, point.position[1] - 1]  // ↖ Diagonal
-            ];
-    
-            possibleConnections.forEach(conn => {
+            // Loop through the connections defined for the current point
+            point.connections.forEach(conn => {
                 if (conn[0] < 0 || conn[0] >= BOARD_SIZE || conn[1] < 0 || conn[1] >= BOARD_SIZE) {
-                    return; // Ignore out-of-bounds positions
+                    return; // Skip out-of-bound connections
                 }
     
                 const to = getPosition(conn);
@@ -501,20 +515,24 @@ const BaghChal = () => {
     
                 if (!addedLines.has(lineId)) {
                     lines.push(
-                        <line 
-                            key={lineId} 
-                            x1={from.x} y1={from.y} 
-                            x2={to.x} y2={to.y} 
-                            stroke="black" strokeWidth="2" 
+                        <line
+                            key={lineId}
+                            x1={from.x}
+                            y1={from.y}
+                            x2={to.x}
+                            y2={to.y}
+                            stroke="black"
+                            strokeWidth="2"
                         />
                     );
-                    addedLines.add(lineId);
+                    addedLines.add(lineId); // Track the connection to avoid duplicates
                 }
             });
         });
     
+        // Return the SVG element containing all the drawn lines
         return (
-            <svg className="board-lines " width={boardSize} height={boardSize}>
+            <svg className="board-lines" width={boardSize} height={boardSize}>
                 {lines}
             </svg>
         );
