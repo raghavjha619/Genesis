@@ -6,45 +6,47 @@ import ravan from "../assets/ravan.svg"
 import hanuman from "../assets/hanuman.svg"
 import innerbutton from "../assets/innerbutton.png"
 
-const BOARD_SIZE = 5;
-const MAX_GOATS = 20;
-const Ravan_COUNT = 5;
+const BOARD_SIZE = 11;
+const MAX_GOATS = 15;
+const Ravan_COUNT = 3;
 //first commit
 const BOARD_LAYOUT = [
     // Top row
-    { position: [0, 0], connections: [[0, 1], [1, 0], [1, 1]] },
-    { position: [0, 1], connections: [[0, 0], [0, 2], [1, 1]] },
-    { position: [0, 2], connections: [[0, 1], [1, 1], [0, 3], [1, 2], [1, 3]] },
-    { position: [0, 3], connections: [[0, 2], [0, 4], [1, 3]] },
-    { position: [0, 4], connections: [[0, 3], [1, 4], [1, 3]] },
+
+    { position: [0, 5], connections: [[1, 3], [1, 6], [1, 4], [1, 7]] },
 
     // Second row
-    { position: [1, 0], connections: [[0, 0], [1, 1], [2, 0]] },
-    { position: [1, 1], connections: [[0, 0], [0, 1], [0, 2], [1, 2], [2, 1], [2, 2], [1, 0], [2, 0]] },
-    { position: [1, 2], connections: [[0, 2], [1, 1], [1, 3], [2, 2]] },
-    { position: [1, 3], connections: [[0, 3], [0, 4], [1, 2], [1, 4], [2, 4], [2, 2], [2, 3], [0, 2]] },
-    { position: [1, 4], connections: [[0, 4], [1, 3], [2, 4]] },
+    { position: [1, 0], connections: [[1, 3], [2, 0]] },
+
+    { position: [1, 3], connections: [[1, 0], [2, 2], [1, 4], [0, 5]] },
+    { position: [1, 4], connections: [[0, 5], [1, 3], [1, 6], [2, 3]] },
+    { position: [1, 6], connections: [[0, 5], [1, 4], [1, 7], [2, 7]] },
+    { position: [1, 7], connections: [[0, 5], [1, 6], [1, 10], [2, 8]] },
+    { position: [1, 10], connections: [[1, 7], [2, 10]] },
+
 
     // Middle row
-    { position: [2, 0], connections: [[1, 0], [2, 1], [3, 0], [3, 1], [1, 1]] },
-    { position: [2, 1], connections: [[1, 1], [2, 0], [2, 2], [3, 1]] },
-    { position: [2, 2], connections: [[1, 1], [1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2], [3, 3]] },
-    { position: [2, 3], connections: [[1, 3], [2, 2], [2, 4], [3, 3]] },
-    { position: [2, 4], connections: [[1, 4], [1, 3], [3, 3], [2, 3], [3, 4]] },
+    { position: [2, 0], connections: [[1, 0], [2, 2], [3, 0]] },
+    { position: [2, 2], connections: [[1, 3], [2, 0], [2, 3], [3, 1]] },
+    { position: [2, 3], connections: [[1, 4], [2, 2], [3, 2], [2, 7]] },
+    { position: [2, 7], connections: [[1, 6], [2, 8], [3, 8], [2, 3]] },
+    { position: [2, 8], connections: [[1, 7], [2, 7], [3, 9], [2, 10]] },
+    { position: [2, 10], connections: [[1, 10], [2, 8], [3, 10]] },
 
     // Fourth row
-    { position: [3, 0], connections: [[2, 0], [3, 1], [4, 0]] },
-    { position: [3, 1], connections: [[2, 1], [2, 0], [2, 2], [3, 0], [3, 2], [4, 0], [4, 1], [4, 2]] },
-    { position: [3, 2], connections: [[2, 2], [3, 1], [3, 3], [4, 2]] },
-    { position: [3, 3], connections: [[2, 2], [2, 3], [3, 2], [3, 4], [4, 2], [4, 3], [2, 4], [4, 4]] },
-    { position: [3, 4], connections: [[2, 4], [3, 3], [4, 4]] },
+    { position: [3, 0], connections: [[2, 0], [3, 1]] },
+    { position: [3, 1], connections: [[3, 0], [4, 0], [2, 2], [3, 2]] },
+    { position: [3, 2], connections: [[4, 1], [3, 1], [2, 3], [3, 8]] },
+    { position: [3, 8], connections: [[2, 7], [3, 9], [4, 9], [3, 2]] },
+    { position: [3, 9], connections: [[2, 8], [3, 8], [3, 10]] },
+    { position: [3, 10], connections: [[2, 10], [3, 9]] },
 
     // Bottom row
-    { position: [4, 0], connections: [[3, 0], [3, 1], [4, 1]] },
-    { position: [4, 1], connections: [[3, 1], [4, 0], [4, 2]] },
-    { position: [4, 2], connections: [[3, 2], [3, 3], [4, 1], [4, 3], [3, 1]] },
-    { position: [4, 3], connections: [[3, 3], [4, 2], [4, 4]] },
-    { position: [4, 4], connections: [[3, 4], [4, 3], [3, 3]] },
+    { position: [4, 0], connections: [[3, 1], [4, 1]] },
+    { position: [4, 1], connections: [[4, 0], [3, 2], [4, 9]] },
+    { position: [4, 9], connections: [[3, 8], [4, 10], [4, 1]] },
+    { position: [4, 10], connections: [[4, 9], [3, 9]] },
+
 ];
 
 // Helper function to find connections for a position
@@ -65,56 +67,57 @@ const positionInList = (pos, list) => {
     return list.some(p => positionsEqual(p, pos));
 };
 
+// Find the middle position between two positions
 const getMiddlePosition = (pos1, pos2) => {
-    // Only consider positions that are two steps away
-    if (Math.abs(pos1[0] - pos2[0]) === 2 && pos1[1] === pos2[1]) {
-        // Vertical two-step move
-        return [Math.min(pos1[0], pos2[0]) + 1, pos1[1]];
+    // Find the middle position based on the layout and connections
+    if (
+        pos1[0] === 1 && pos1[1] === 3 && pos2[0] === 1 && pos2[1] === 6
+    ) {
+        return [1, 4];
     }
-    if (Math.abs(pos1[1] - pos2[1]) === 2 && pos1[0] === pos2[0]) {
-        // Horizontal two-step move
-        return [pos1[0], Math.min(pos1[1], pos2[1]) + 1];
+    if (
+        pos1[0] === 0 && pos1[1] === 5 && pos2[0] === 2 && pos2[1] === 2
+    ) {
+        return [1, 3];
     }
-    if (Math.abs(pos1[0] - pos2[0]) === 2 && Math.abs(pos1[1] - pos2[1]) === 2) {
-        // Diagonal two-step move
-        const middlePos = [Math.min(pos1[0], pos2[0]) + 1, Math.min(pos1[1], pos2[1]) + 1];
-
-        // Check if the diagonal move is valid based on board connections
-        const isValidDiagonal = BOARD_LAYOUT.some((point) => {
-            // Check if the starting point is connected to the middle position
-            if (point.position[0] === pos1[0] && point.position[1] === pos1[1]) {
+    const isValidConnection = (start, middle, end) => {
+        // Check if `start` is connected to `middle` and `middle` is connected to `end`
+        return BOARD_LAYOUT.some((point) => {
+            if (point.position[0] === start[0] && point.position[1] === start[1]) {
                 return point.connections.some(
                     (conn) =>
-                        conn[0] === middlePos[0] &&
-                        conn[1] === middlePos[1] &&
-                        // Check if the middle position connects to the destination
+                        conn[0] === middle[0] &&
+                        conn[1] === middle[1] &&
                         BOARD_LAYOUT.some(
-                            (middlePoint) =>
-                                middlePoint.position[0] === middlePos[0] &&
-                                middlePoint.position[1] === middlePos[1] &&
-                                middlePoint.connections.some(
-                                    (endConn) => endConn[0] === pos2[0] && endConn[1] === pos2[1]
+                            (midPoint) =>
+                                midPoint.position[0] === middle[0] &&
+                                midPoint.position[1] === middle[1] &&
+                                midPoint.connections.some(
+                                    (endConn) => endConn[0] === end[0] && endConn[1] === end[1]
                                 )
                         )
                 );
             }
             return false;
         });
+    };
 
-        if (isValidDiagonal) {
-            return middlePos;
+    // Iterate through all positions in the layout to find a valid middle position
+    for (const middlePoint of BOARD_LAYOUT) {
+        const middle = middlePoint.position;
+
+        // Check if the middle position is valid for the given `pos1` and `pos2`
+        if (isValidConnection(pos1, middle, pos2)) {
+            return middle;
         }
     }
 
-    return null; // Invalid move
+    return null; // No valid middle position found
 };
 
 
 
-
-
-
-const GameBoard = () => {
+const Medium = () => {
     const [gameState, setGameState] = useState({
         board: Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null)),
         currentPlayer: 'goat',
@@ -131,10 +134,10 @@ const GameBoard = () => {
         const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
         // Place Ravan at the corners
-        initialBoard[0][0] = 'tiger';
-        initialBoard[0][4] = 'tiger';
+        initialBoard[0][5] = 'tiger';
         initialBoard[4][0] = 'tiger';
-        initialBoard[4][4] = 'tiger';
+        initialBoard[4][10] = 'tiger';
+
 
         setGameState(prev => ({
             ...prev,
@@ -145,7 +148,7 @@ const GameBoard = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >= 3) {
+        if (gameState.goatsCaptured >= 10) {
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
@@ -437,10 +440,10 @@ const GameBoard = () => {
         const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
         // Place Ravan at the corners
-        initialBoard[0][0] = 'tiger';
-        initialBoard[0][4] = 'tiger';
+        initialBoard[0][5] = 'tiger';
         initialBoard[4][0] = 'tiger';
-        initialBoard[4][4] = 'tiger';
+        initialBoard[4][10] = 'tiger';
+
 
         setGameState({
             board: initialBoard,
@@ -462,10 +465,11 @@ const GameBoard = () => {
 
         // Calculate position based on triangular grid
         const boardSize = 640; // Size of the board in pixels
-        const margin = 80; // Margin from the edges
+        const margin = 40;
+        const verticalStretchFactor = 2.4;// Margin from the edges
 
         const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
-        const y = margin + (row * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
+        const y = margin + (row * (boardSize - 2 * margin) * verticalStretchFactor / (BOARD_SIZE - 1));
 
         const piece = gameState.board[row][col];
         const isSelected = gameState.selectedPiece &&
@@ -478,8 +482,8 @@ const GameBoard = () => {
                 {/* Board point */}
                 <div
                     className={cn(
-                        "board-point",
-                        isPossibleMove && "animate-pulse-soft bg-yellow-300 z-10"
+                        " board-point bg-[#91206ff2] border-2 border-[#E5B84B] w-6 h-6  ",
+                        isPossibleMove && "scale-125 bg-red-700 z-10"
                     )}
                     style={{
                         left: `${x}px`,
@@ -495,7 +499,7 @@ const GameBoard = () => {
                         className={cn(
                             "piece",
                             piece === 'tiger' ? "piece-tiger" : "piece-goat",
-                            isSelected && "shadow-lg ring-2 ring-yellow-400 ring-offset-2 ring-offset-transparent animate-bounce-soft"
+                            isSelected && "shadow-lg ring-2 ring-yellow-300 ring-offset-2 ring-offset-transparent animate-bounce-soft"
                         )}
                         style={{
                             left: `${x}px`,
@@ -504,10 +508,8 @@ const GameBoard = () => {
                         }}
                         onClick={() => handlePointClick([row, col])}
                     >
-                        {piece === 'tiger' ? <img src={ravan} alt="ravan" className="w-20 h-20" /> :
-                            <img src={hanuman} alt="hanuman" className="w-20 h-20" />
-
-                        }
+                        {piece === 'tiger' ? <img src={ravan} alt="ravan" width={40} height={40} /> :
+                            <img src={hanuman} alt="hanuman" width={40} height={40} />}
 
                     </div>
                 )}
@@ -517,66 +519,63 @@ const GameBoard = () => {
 
     const renderBoardLines = () => {
         const boardSize = 640; // Board size in pixels
-        const margin = 80; // Margin from the edges
+        const margin = 40;
+        const verticalStretchFactor = 2.4;// Margin from the edges
 
-        // Calculate the exact pixel position on the board for a given row and column
+        // Convert board position (like [2, 3]) to pixel position for SVG placement.
         const getPosition = (pos) => {
             const [row, col] = pos;
             const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
-            const y = margin + (row * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
+            const y = margin + (row * (boardSize - 2 * margin) * verticalStretchFactor / (BOARD_SIZE - 1));
             return { x, y };
         };
 
         const lines = [];
-        const addedLines = new Set(); // Keep track of drawn lines to avoid duplicates
+        const addedLines = new Set(); // Prevent duplicate connections
 
-        // Draw lines based only on explicitly listed connections in BOARD_LAYOUT
-        BOARD_LAYOUT.forEach((point) => {
-            const from = getPosition(point.position); // Get pixel coordinates of start point
+        // Iterate through BOARD_LAYOUT to draw connections between points
+        BOARD_LAYOUT.forEach(point => {
+            const from = getPosition(point.position);
 
-            point.connections.forEach((conn) => {
-                if (
-                    conn[0] < 0 || conn[0] >= BOARD_SIZE || // Out-of-bounds row check
-                    conn[1] < 0 || conn[1] >= BOARD_SIZE    // Out-of-bounds column check
-                ) {
-                    return; // Skip invalid connections
+            // Loop through the connections defined for the current point
+            point.connections.forEach(conn => {
+                if (conn[0] < 0 || conn[0] >= BOARD_SIZE || conn[1] < 0 || conn[1] >= BOARD_SIZE) {
+                    return; // Skip out-of-bound connections
                 }
 
-                // Compute pixel coordinates for the connection endpoint
                 const to = getPosition(conn);
                 const lineId = `${point.position.join(',')} -> ${conn.join(',')}`;
 
-                // Only add the line if it hasn't already been added
-                if (!addedLines.has(lineId) && !addedLines.has(`${conn.join(',')} -> ${point.position.join(',')}`)) {
+                if (!addedLines.has(lineId)) {
                     lines.push(
                         <>
-                            {/* Outer line for a thicker "shadowed" effect */}
+                            {/* Outline (Thicker Dark Line) */}
                             <line
                                 key={`${lineId}-outline`}
                                 x1={from.x} y1={from.y}
                                 x2={to.x} y2={to.y}
-                                stroke="#e39c15"
-                                strokeWidth="6"
+                                stroke="#e39c15" // Black outline
+                                strokeWidth="6" // Make it slightly thicker
                                 strokeLinecap="round"
                             />
 
-                            {/* Main thinner line */}
+                            {/* Main Line */}
                             <line
                                 key={lineId}
                                 x1={from.x} y1={from.y}
                                 x2={to.x} y2={to.y}
-                                stroke="#fff"
-                                strokeWidth="2"
+                                stroke="#fff" // White main line
+                                strokeWidth="2" // Keep it thinner
                                 strokeLinecap="round"
                             />
                         </>
                     );
-                    addedLines.add(lineId); // Prevent this line from being added again
+                    addedLines.add(lineId); // Track the connection to avoid duplicates
                 }
             });
         });
 
-        // Return the SVG containing all lines
+        // Return the SVG element containing all the drawn lines
         return (
             <svg className="board-lines" width={boardSize} height={boardSize}>
                 {lines}
@@ -600,7 +599,7 @@ const GameBoard = () => {
                     <div className="font-semibold ml-10 ">
                         Computer
                     </div>
-                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/2</div>
+                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/10</div>
                 </div>
 
                 {/* Player status panel */}
@@ -630,18 +629,18 @@ const GameBoard = () => {
                 {BOARD_LAYOUT.map(point => renderBoardPoint(point.position))}
 
 
-                {/* Instructions */}
-                <div className="my-2 text-amber-800 text-base text-center px-4">
-                    {gameState.currentPlayer === 'goat' ? (
-                        gameState.goatsPlaced < MAX_GOATS ? (
-                            <p>Place your vanar veer on an empty intersection</p>
-                        ) : (
-                            <p>Select a vanar veer and move it to an adjacent empty intersection</p>
-                        )
+                    {/* Instructions */}
+            <div className="my-2 text-amber-800 text-base text-center px-4">
+                {gameState.currentPlayer === 'goat' ? (
+                    gameState.goatsPlaced < MAX_GOATS ? (
+                        <p>Place your vanar veer on an empty intersection</p>
                     ) : (
-                        <p>Computer is thinking...</p>
-                    )}
-                </div>
+                        <p>Select a vanar veer and move it to an adjacent empty intersection</p>
+                    )
+                ) : (
+                    <p>Computer is thinking...</p>
+                )}
+            </div>
 
                 {/* Game over overlay */}
                 {gameState.gameOver && (
@@ -651,7 +650,7 @@ const GameBoard = () => {
                         </h2>
                         <p className="mb-4">
                             {gameState.winner === 'tiger'
-                                ? "Ravan captured 3 Vanar veer"
+                                ? "Ravan captured 10 Vanar veer"
                                 : "Ravan have been immobilized"}
                         </p>
                         <button
@@ -669,4 +668,4 @@ const GameBoard = () => {
     );
 };
 
-export default GameBoard;
+export default Medium;

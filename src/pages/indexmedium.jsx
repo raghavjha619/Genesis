@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
-
-// import HardGame from "../components/Gameboard.jsx";
-import EasyGame from "../components/BaghChal.jsx";
+import MedGame from "../components/Medium.jsx";
 import { Button } from '../components/ui/Button.jsx';
 import { RefreshCw, ArrowLeft, Info } from 'lucide-react';
 import bgImage from "../assets/Frame.jpg";
+import { Link } from "react-router-dom";
 
 
-const Indexeasy = () => {
+
+const Indexmedium = () => {
   return (
     <>
             {/* Background Blur Image */}
@@ -42,11 +41,11 @@ const Indexeasy = () => {
 
                 {/* Game Board Section */}
                 <div className="container px-4 mx-auto relative z-10 flex justify-center items-center h-full">
-                    <EasyGame />
+                    <MedGame />
                 </div>
             </div>
         </>
   );
 };
 
-export default Indexeasy;
+export default Indexmedium;

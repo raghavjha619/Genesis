@@ -1,20 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import bgImage from "../assets/Frame.jpg";
 import Heading from "../assets/Group2.svg";
 import Play from "../assets/Play.svg";
 import easy from "../assets/easy.svg";
 import med from "../assets/Medium.svg";
-import Setting from "../assets/Setting.svg";
+import hard from "../assets/hard.svg";
 import RulesIcon from "../assets/Rules.svg";
-// import Example1 from "../assets/example1.jpg"; 
-// import NewVanarveer from "../assets/new-monkey.jpg"; 
 import { Button } from "./ui/Button.jsx";
 import { ArrowLeft } from "lucide-react";
 
 const Home = () => {
     const [showRules, setShowRules] = useState(false);
     const [showDifficulty, setShowDifficulty] = useState(false);
+
+    const rulesRef = useRef(null);
+    const difficultyRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (rulesRef.current && !rulesRef.current.contains(event.target)) {
+                setShowRules(false);
+            }
+            if (difficultyRef.current && !difficultyRef.current.contains(event.target)) {
+                setShowDifficulty(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     return (
         <div
@@ -32,12 +50,6 @@ const Home = () => {
                 <Link className="flex hover:scale-105 transition transform duration-300" onClick={() => (setShowDifficulty(true))}>
                     <img src={Play} alt="Play Button" className="w-96 mb-2" />
                 </Link>
-                {/* <button
-                    className="flex hover:scale-105 transition transform duration-300"
-                    onClick={() => setShowRules(false)}
-                >
-                    <img src={Setting} alt="Settings" className="w-96 mb-2" />
-                </button> */}
                 <button
                     className="flex hover:scale-105 transition transform duration-300"
                     onClick={() => setShowRules(true)}
@@ -50,6 +62,7 @@ const Home = () => {
             {showRules && (
                 <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
                     <div
+                        ref={rulesRef}
                         className="max-w-lg rounded-lg p-6 relative shadow-lg rules-popup"
                         style={{
                             backgroundColor: "#f5e1c0", // Warm parchment color
@@ -60,14 +73,6 @@ const Home = () => {
                             color: "#5a4631" // Dark brown text for readability
                         }}
                     >
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-2 top-2"
-                            onClick={() => setShowRules(false)}
-                        >
-                            <ArrowLeft size={20} />
-                        </Button>
                         <h2 className="text-2xl font-bold mb-4">How to Play Baghchal</h2>
                         <div className="space-y-3 text-sm">
                             <p>Baghchal is a traditional board game from Nepal, played on a 5×5 grid.</p>
@@ -101,41 +106,34 @@ const Home = () => {
                 </div>
             )}
 
-            {/* Rules Pop-up */}
+            {/* Difficulty Pop-up */}
             {showDifficulty && (
                 <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
                     <div
-                        className=" relative max-w-lg min-h-96 min-w-96 rounded-lg p-6 flex justify-end  shadow-lg rules-popup"
-                        style={{
-                            backgroundColor: "#f5e1c0", // Warm parchment color
-                            backgroundImage: "url('/path-to-texture.jpg')", // Texture image
-                            backgroundSize: "cover",
-                            border: "4px solid #b08968", // Aged brownish border
-                            fontFamily: "'Cinzel Decorative', serif", // Ancient-looking font
-                            color: "#5a4631" // Dark brown text for readability
-                        }}
+                        ref={difficultyRef}
+                        className="relative max-w-lg  min-w-[50%] mx-auto rounded-lg p-12 flex flex-col items-center shadow-lg bg-[#f5e1c0] bg-cover border-4 border-[#b08968] text-[#5a4631] font-[Cinzel Decorative] rules-popup"
                     >
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute right-2 top-2"
-                            onClick={() => setShowDifficulty(false)}
-                        >
-                            <ArrowLeft size={20} />
-                        </Button>
-                        
-                        <div className="flex flex-col justify-around">
-                        <div className="mx-4 text-4xl font-bold uppercase font-Inter " > Select Difficulty</div>
-                            <Link className="flex hover:scale-105 transition transform duration-300" to="/easygame" >
+
+                        {/* Title Section */}
+                        <div className="mb-16 text-4xl font-bold uppercase text-center w-full font-Inter">
+                            Select Difficulty
+                        </div>
+
+                        {/* Difficulty Options in a Row */}
+                        <div className="flex justify-center gap-4">
+                            <Link className="flex hover:scale-105 transition-transform duration-300" to="/easygame">
                                 <img src={easy} alt="Easy" className="w-96 mb-2" />
                             </Link>
-                            <Link className="flex hover:scale-105 transition transform duration-300" to="/hardgame" >
+                            <Link className="flex hover:scale-105 transition-transform duration-300" to="/mediumgame">
                                 <img src={med} alt="Medium" className="w-96 mb-2" />
+                            </Link>
+                            <Link className="flex hover:scale-105 transition-transform duration-300" to="/hardgame">
+                                <img src={hard} alt="Hard" className="w-96 mb-2" />
                             </Link>
                         </div>
                     </div>
-
                 </div>
+
             )}
         </div>
     );

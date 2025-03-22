@@ -5,6 +5,7 @@ import { RefreshCw } from 'lucide-react';
 import ravan from "../assets/ravan.svg"
 import hanuman from "../assets/hanuman.svg"
 import './ui/border.css'
+import innerbutton from "../assets/innerbutton.png"
 const BOARD_SIZE = 7;
 const MAX_GOATS = 5;
 const Ravan_COUNT = 1;
@@ -404,13 +405,13 @@ const BaghChal = () => {
             ...prevState,
             gameOver: false // Set gameOver false first to trigger re-render
         }));
-    
+
         setTimeout(() => {
             const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
-    
+
             // Place Ravan's tigers at all four corners
             initialBoard[0][3] = 'tiger';
-    
+
             setGameState({
                 board: initialBoard,
                 currentPlayer: 'goat',
@@ -421,7 +422,7 @@ const BaghChal = () => {
                 gameOver: false,
                 winner: null
             });
-    
+
             toast("🔄 Game reset! Get ready for battle!");
         }, 10); // Small delay to ensure re-render
     };
@@ -448,9 +449,9 @@ const BaghChal = () => {
             <React.Fragment key={`point-${row}-${col}`}>
                 {/* Board point */}
                 <div className={cn(
-                        " board-point bg-[#91206ff2] border-2 border-[#E5B84B] w-6 h-6  ",
-                        isPossibleMove && "scale-125 bg-red-700 z-10"
-                    )}
+                    " board-point bg-[#91206ff2] border-2 border-[#E5B84B] w-6 h-6  ",
+                    isPossibleMove && "scale-125 bg-red-700 z-10"
+                )}
                     style={{
                         left: `${x}px`,
                         top: `${y}px`,
@@ -458,7 +459,7 @@ const BaghChal = () => {
                     }}
                     onClick={() => handlePointClick([row, col])}
                 />
-                
+
 
                 {/* Piece */}
                 {piece && (
@@ -553,26 +554,35 @@ const BaghChal = () => {
 
 
     return (
-        <div className="flex flex-col items-center justify-between min-h-screen py-8  ">
+        <div className="flex flex-col items-center justify-between min-h-screen py-8 overflow-hidden scrollbar-hide ">
             <div className='flex gap-16 mb-12'>
                 {/* Computer status panel */}
-                <div className="game-panel w-72 animate-fade-in">
-                    <span className="player-indicator">
-                        <div className="player-avatar bg-blue-500 mr-2">🤖</div>
+                <div className=" w-96 h-[100px]  flex justify-around items-center text-white"
+                    style={{
+                        backgroundImage: `url(${innerbutton})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    }}
+                >
+                    <div className="font-semibold ml-10 ">
                         Computer
-                    </span>
-                    <span className="font-semibold">Killed: {gameState.goatsCaptured}/2</span>
+                    </div>
+                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/2</div>
                 </div>
 
                 {/* Player status panel */}
-                <div className="game-panel w-72  animate-fade-in">
-                    <span className="player-indicator">
-                        <div className="player-avatar bg-green-500 mr-2">👤</div>
+                <div className=" w-96 h-[100px]  flex justify-around items-center text-white"
+                    style={{
+                        backgroundImage: `url(${innerbutton})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                    }}>
+                   <div className="font-semibold ml-10 ">
                         You
-                    </span>
-                    <span className="font-semibold">
+                    </div>
+                    <div className="font-semibold mr-10">
                         Remaining: {Math.max(0, MAX_GOATS - gameState.goatsPlaced)}
-                    </span>
+                    </div>
                 </div>
             </div>
 
@@ -606,10 +616,9 @@ const BaghChal = () => {
                         </button>
                     </div>
                 )}
-            </div>
 
-            {/* Instructions */}
-            <div className="mt-8 text-white opacity-70 text-sm max-w-md text-center px-4">
+                {/* Instructions */}
+            <div className="my-2 text-amber-800 text-base text-center px-4">
                 {gameState.currentPlayer === 'goat' ? (
                     gameState.goatsPlaced < MAX_GOATS ? (
                         <p>Place your vanar veer on an empty intersection</p>
@@ -620,6 +629,9 @@ const BaghChal = () => {
                     <p>Computer is thinking...</p>
                 )}
             </div>
+            </div>
+
+            
         </div>
     );
 };

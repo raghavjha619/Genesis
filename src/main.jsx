@@ -6,6 +6,7 @@ import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } 
 import Home from './components/Home.jsx'
 import Indexeasy from './pages/indexeasy.jsx'
 import Indexhard from './pages/indexhard.jsx'
+import Indexmedium from './pages/indexmedium.jsx'
 
 const router = createBrowserRouter([
   {
@@ -14,7 +15,8 @@ const router = createBrowserRouter([
     children: [
       { path: '/', element: <Home /> }, 
       { path: '/easygame', element: <Indexeasy /> },
-      { path: '/hardgame', element: <Indexhard /> }
+      { path: '/hardgame', element: <Indexhard /> },
+      { path: '/mediumgame', element: <Indexmedium /> },
     ]
   }
 ]);
