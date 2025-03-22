@@ -25,7 +25,7 @@ const BOARD_LAYOUT = [
     { position: [1, 4], connections: [[0, 4], [1, 3], [2, 4]] },
 
     // Middle row
-    { position: [2, 0], connections: [[1, 0], [2, 1], [3, 0],[3,1],[1,1]] },
+    { position: [2, 0], connections: [[1, 0], [2, 1], [3, 0],[3,1]] },
     { position: [2, 1], connections: [[1, 1], [2, 0], [2, 2], [3, 1]] },
     { position: [2, 2], connections: [[1, 1], [1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2], [3, 3]] },
     { position: [2, 3], connections: [[1, 3], [2, 2], [2, 4], [3, 3]] },
@@ -41,7 +41,7 @@ const BOARD_LAYOUT = [
     // Bottom row
     { position: [4, 0], connections: [[3, 0], [3, 1], [4, 1]] },
     { position: [4, 1], connections: [[3, 1], [4, 0], [4, 2]] },
-    { position: [4, 2], connections: [[3, 2], [3, 3], [4, 1], [4, 3],[3,1]] },
+    { position: [4, 2], connections: [[3, 2], [3, 3], [4, 1], [4, 3]] },
     { position: [4, 3], connections: [[3, 3], [4, 2], [4, 4]] },
     { position: [4, 4], connections: [[3, 4], [4, 3],[3,3]] },
 ];
@@ -64,56 +64,22 @@ const positionInList = (pos, list) => {
     return list.some(p => positionsEqual(p, pos));
 };
 
+// Find the middle position between two positions
 const getMiddlePosition = (pos1, pos2) => {
-    // Only consider positions that are two steps away
+    // Only consider positions that are two steps away (for tiger jumps)
     if (Math.abs(pos1[0] - pos2[0]) === 2 && pos1[1] === pos2[1]) {
-        // Vertical two-step move
         return [Math.min(pos1[0], pos2[0]) + 1, pos1[1]];
     }
     if (Math.abs(pos1[1] - pos2[1]) === 2 && pos1[0] === pos2[0]) {
-        // Horizontal two-step move
         return [pos1[0], Math.min(pos1[1], pos2[1]) + 1];
     }
     if (Math.abs(pos1[0] - pos2[0]) === 2 && Math.abs(pos1[1] - pos2[1]) === 2) {
-        // Diagonal two-step move
-        const middlePos = [Math.min(pos1[0], pos2[0]) + 1, Math.min(pos1[1], pos2[1]) + 1];
-
-        // Check if the diagonal move is valid based on board connections
-        const isValidDiagonal = BOARD_LAYOUT.some((point) => {
-            // Check if the starting point is connected to the middle position
-            if (point.position[0] === pos1[0] && point.position[1] === pos1[1]) {
-                return point.connections.some(
-                    (conn) =>
-                        conn[0] === middlePos[0] &&
-                        conn[1] === middlePos[1] &&
-                        // Check if the middle position connects to the destination
-                        BOARD_LAYOUT.some(
-                            (middlePoint) =>
-                                middlePoint.position[0] === middlePos[0] &&
-                                middlePoint.position[1] === middlePos[1] &&
-                                middlePoint.connections.some(
-                                    (endConn) => endConn[0] === pos2[0] && endConn[1] === pos2[1]
-                                )
-                        )
-                );
-            }
-            return false;
-        });
-
-        if (isValidDiagonal) {
-            return middlePos;
-        }
+        return [Math.min(pos1[0], pos2[0]) + 1, Math.min(pos1[1], pos2[1]) + 1];
     }
-
-    return null; // Invalid move
+    return null;
 };
 
-
-
-
-
-
-const GameBoard = () => {
+const Goat = () => {
     const [gameState, setGameState] = useState({
         board: Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null)),
         currentPlayer: 'goat',
@@ -341,18 +307,80 @@ const GameBoard = () => {
     };
 
 
-    // AI move for tiger
-    const makeAIMove = () => {
-        // Find all Ravan
-        const Ravan = [];
+    // AI move for goats
+const makeAIMove = () => {
+    const newBoard = [...gameState.board.map(row => [...row])];
 
+    if (gameState.goatsPlaced < MAX_GOATS) {
+        // AI places a goat on a random empty spot
+        const emptySpots = [];
         for (let i = 0; i < BOARD_SIZE; i++) {
             for (let j = 0; j < BOARD_SIZE; j++) {
-                if (gameState.board[i][j] === 'tiger') {
-                    Ravan.push([i, j]);
+                if (!newBoard[i][j]) {
+                    emptySpots.push([i, j]);
                 }
             }
         }
+
+        if (emptySpots.length > 0) {
+            const randomSpot = emptySpots[Math.floor(Math.random() * emptySpots.length)];
+            const [row, col] = randomSpot;
+            newBoard[row][col] = 'goat';
+
+            setGameState((prev) => ({
+                ...prev,
+                board: newBoard,
+                goatsPlaced: prev.goatsPlaced + 1,
+                currentPlayer: 'tiger',
+            }));
+        }
+    } else {
+        // Move a goat (basic AI: random valid move)
+        const goats = [];
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            for (let j = 0; j < BOARD_SIZE; j++) {
+                if (newBoard[i][j] === 'goat') {
+                    goats.push([i, j]);
+                }
+            }
+        }
+
+        let bestMove = null;
+
+        for (const goat of goats) {
+            const possibleMoves = getPossibleMoves(goat, 'goat');
+            if (possibleMoves.length > 0) {
+                const randomMove = possibleMoves[Math.floor(Math.random() * possibleMoves.length)];
+                bestMove = { from: goat, to: randomMove };
+                break;
+            }
+        }
+
+        if (bestMove) {
+            const { from, to } = bestMove;
+            const [fromRow, fromCol] = from;
+            const [toRow, toCol] = to;
+
+            newBoard[toRow][toCol] = 'goat';
+            newBoard[fromRow][fromCol] = null;
+
+            setGameState((prev) => ({
+                ...prev,
+                board: newBoard,
+                currentPlayer: 'tiger',
+            }));
+        } else {
+            // No valid move for goats, tigers win
+            setGameState((prev) => ({
+                ...prev,
+                gameOver: true,
+                winner: 'tiger',
+            }));
+            toast.success("Tigers win! Goats have no valid moves.");
+        }
+    }
+};
+
 
         // Prioritize moves that capture goats
         let bestMove = null;
@@ -429,31 +457,29 @@ const GameBoard = () => {
             }));
             toast.success("Goats win! Ravan are trapped.");
         }
-    };
+    
 
     // Reset game
-    const resetGame = () => {
-        const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
+// Reset game
+const resetGame = () => {
+    const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
-        // Place Ravan at the corners
-        initialBoard[0][0] = 'tiger';
-        initialBoard[0][4] = 'tiger';
-        initialBoard[4][0] = 'tiger';
-        initialBoard[4][4] = 'tiger';
+    // Place tigers at the corners
+    initialBoard[0][0] = 'tiger';
 
-        setGameState({
-            board: initialBoard,
-            currentPlayer: 'goat',
-            selectedPiece: null,
-            goatsPlaced: 0,
-            goatsCaptured: 0,
-            possibleMoves: [],
-            gameOver: false,
-            winner: null
-        });
+    setGameState({
+        board: initialBoard,
+        currentPlayer: 'tiger', // Player is tiger now
+        selectedPiece: null,
+        goatsPlaced: 0,
+        goatsCaptured: 0,
+        possibleMoves: [],
+        gameOver: false,
+        winner: null,
+    });
 
-        toast("Game reset!");
-    };
+    toast("Game reset!");
+};
 
     // Render board point
     const renderBoardPoint = (position) => {
@@ -644,19 +670,17 @@ const GameBoard = () => {
 
 
             {/* Instructions */}
-            <div className=" text-white h-40 opacity-100 text-lg max-w-md text-center px-4 mt-8 ">
-                {gameState.currentPlayer === 'goat' ? (
-                    gameState.goatsPlaced < MAX_GOATS ? (
-                        <p>Place your Vanar veer on an empty intersection</p>
-                    ) : (
-                        <p>Select a Vanar veer and move it to an adjacent empty intersection</p>
-                    )
-                ) : (
-                    <p>Computer is thinking...</p>
-                )}
-            </div>
+            <div className="mt-8 text-white opacity-70 text-sm max-w-md text-center px-4">
+    {gameState.currentPlayer === 'tiger' ? (
+        <p>Select a tiger and move it to an adjacent empty intersection or capture a goat.</p>
+    ) : gameState.goatsPlaced < MAX_GOATS ? (
+        <p>Computer is placing goats...</p>
+    ) : (
+        <p>Computer is moving goats...</p>
+    )}
+</div>
         </div>
     );
 };
 
-export default GameBoard;
+export default Goat;

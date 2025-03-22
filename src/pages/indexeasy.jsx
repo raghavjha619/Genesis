@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import HardGame from  "../components/Gameboard.jsx";
-import EasyGame from  "../components/BaghChal.jsx";
+import EasyGame from  "../components/Medium.jsx";
 import { Button } from '../components/ui/Button.jsx';
 import { RefreshCw, ArrowLeft, Info } from 'lucide-react';
 
