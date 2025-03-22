@@ -7,7 +7,7 @@ import Setting from "../assets/Setting.svg";
 import RulesIcon from "../assets/Rules.svg";
 // import Example1 from "../assets/example1.jpg"; 
 // import NewVanarveer from "../assets/new-monkey.jpg"; 
-import { Button } from "./ui/Button";
+import { Button } from "./ui/Button.jsx";
 import { ArrowLeft } from "lucide-react";
 
 const Home = () => {

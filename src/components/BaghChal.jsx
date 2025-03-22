@@ -407,9 +407,7 @@ const BaghChal = () => {
 
         // Place tigers at the corners
         initialBoard[0][0] = 'tiger';
-        initialBoard[0][4] = 'tiger';
-        initialBoard[4][0] = 'tiger';
-        initialBoard[4][4] = 'tiger';
+        
 
         setGameState({
             board: initialBoard,
