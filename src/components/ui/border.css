@@ -1,0 +1,14 @@
+.box {
+    border-radius: 6px;
+    border: 4px;
+  }
+  
+  .box::before {
+    content: "";
+    position: absolute;
+    inset: -6px; 
+    z-index: -1;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #BE6500 0%, #E5B84B 31%, #FFF17F 55%, #DE9100 99%);
+  }
+  

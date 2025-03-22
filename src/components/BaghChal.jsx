@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { RefreshCw } from 'lucide-react';
 import ravan from "../assets/ravan.svg"
 import hanuman from "../assets/hanuman.svg"
-
+import './ui/border.css'
 const BOARD_SIZE = 7;
 const MAX_GOATS = 5;
 const Ravan_COUNT = 1;
@@ -447,10 +447,9 @@ const BaghChal = () => {
         return (
             <React.Fragment key={`point-${row}-${col}`}>
                 {/* Board point */}
-                <div
-                    className={cn(
-                        "board-point",
-                        isPossibleMove && "animate-pulse-soft bg-yellow-300 z-10"
+                <div className={cn(
+                        " board-point bg-[#91206ff2] border-2 border-[#E5B84B] w-6 h-6  ",
+                        isPossibleMove && "scale-125 bg-red-700 z-10"
                     )}
                     style={{
                         left: `${x}px`,
@@ -459,6 +458,7 @@ const BaghChal = () => {
                     }}
                     onClick={() => handlePointClick([row, col])}
                 />
+                
 
                 {/* Piece */}
                 {piece && (
@@ -578,7 +578,7 @@ const BaghChal = () => {
 
             {/* Game board */}
             <div
-                className="relative w-auto h-auto bg-violet-300 rounded-lg shadow-xl border border-white/20 "
+                className="box relative w-auto h-auto bg-[#f5e1c0] rounded-lg shadow-xl"
             >
                 {/* Board lines */}
                 {renderBoardLines()}
