@@ -456,19 +456,36 @@ const GameBoard = () => {
         toast("Game reset!");
     };
 
-    // Render board point
     const renderBoardPoint = (position) => {
+        const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamic board size
+
+        const margin = 40; // Consistent margin from edges
+
+        // Function to determine board size based on screen width
+        function getBoardSize() {
+            const width = window.innerWidth;
+            if (width < 400) return 290; // Extra Small screens
+            if (width < 640) return 360; // Small screens
+            if (width < 768) return 480; // Medium screens
+            return 640; // Default large screens
+        }
+
+        // Update board size on window resize
+        useEffect(() => {
+            const handleResize = () => setBoardSize(getBoardSize());
+            window.addEventListener("resize", handleResize);
+            return () => window.removeEventListener("resize", handleResize);
+        }, []);
+
         const [row, col] = position;
 
-        // Calculate position based on triangular grid
-        const boardSize = 640; // Size of the board in pixels
-        const margin = 80; // Margin from the edges
-
+        // Calculate position based on dynamic board size
         const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
         const y = margin + (row * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
 
         const piece = gameState.board[row][col];
-        const isSelected = gameState.selectedPiece &&
+        const isSelected =
+            gameState.selectedPiece &&
             gameState.selectedPiece[0] === row &&
             gameState.selectedPiece[1] === col;
         const isPossibleMove = positionInList(position, gameState.possibleMoves);
@@ -478,8 +495,8 @@ const GameBoard = () => {
                 {/* Board point */}
                 <div
                     className={cn(
-                        "board-point",
-                        isPossibleMove && "animate-pulse-soft bg-yellow-300 z-10"
+                        "board-point bg-[#91206ff2] border-2 border-[#E5B84B] sm:w-6 sm:h-6 w-4 h-4",
+                        isPossibleMove && "scale-125 bg-red-700 z-10"
                     )}
                     style={{
                         left: `${x}px`,
@@ -504,11 +521,11 @@ const GameBoard = () => {
                         }}
                         onClick={() => handlePointClick([row, col])}
                     >
-                        {piece === 'tiger' ? <img src={ravan} alt="ravan" className="w-20 h-20" /> :
+                        {piece === 'tiger' ? (
+                            <img src={ravan} alt="ravan" className="w-20 h-20" />
+                        ) : (
                             <img src={hanuman} alt="hanuman" className="w-20 h-20" />
-
-                        }
-
+                        )}
                     </div>
                 )}
             </React.Fragment>
@@ -516,10 +533,26 @@ const GameBoard = () => {
     };
 
     const renderBoardLines = () => {
-        const boardSize = 640; // Board size in pixels
-        const margin = 80; // Margin from the edges
+        const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamic board size
+        const margin = 40;
 
-        // Calculate the exact pixel position on the board for a given row and column
+        // Function to determine board size dynamically
+        function getBoardSize() {
+            const width = window.innerWidth;
+            if (width < 400) return 290;
+            if (width < 640) return 360;
+            if (width < 768) return 480;
+            return 640;
+        }
+
+        // Update board size on window resize
+        useEffect(() => {
+            const handleResize = () => setBoardSize(getBoardSize());
+            window.addEventListener("resize", handleResize);
+            return () => window.removeEventListener("resize", handleResize);
+        }, []);
+
+        // Function to calculate pixel positions
         const getPosition = (pos) => {
             const [row, col] = pos;
             const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
@@ -528,29 +561,24 @@ const GameBoard = () => {
         };
 
         const lines = [];
-        const addedLines = new Set(); // Keep track of drawn lines to avoid duplicates
+        const addedLines = new Set();
 
-        // Draw lines based only on explicitly listed connections in BOARD_LAYOUT
+        // Draw lines based on BOARD_LAYOUT
         BOARD_LAYOUT.forEach((point) => {
-            const from = getPosition(point.position); // Get pixel coordinates of start point
+            const from = getPosition(point.position);
 
             point.connections.forEach((conn) => {
-                if (
-                    conn[0] < 0 || conn[0] >= BOARD_SIZE || // Out-of-bounds row check
-                    conn[1] < 0 || conn[1] >= BOARD_SIZE    // Out-of-bounds column check
-                ) {
+                if (conn[0] < 0 || conn[0] >= BOARD_SIZE || conn[1] < 0 || conn[1] >= BOARD_SIZE) {
                     return; // Skip invalid connections
                 }
 
-                // Compute pixel coordinates for the connection endpoint
                 const to = getPosition(conn);
                 const lineId = `${point.position.join(',')} -> ${conn.join(',')}`;
 
-                // Only add the line if it hasn't already been added
                 if (!addedLines.has(lineId) && !addedLines.has(`${conn.join(',')} -> ${point.position.join(',')}`)) {
                     lines.push(
                         <>
-                            {/* Outer line for a thicker "shadowed" effect */}
+                            {/* Outer shadow line */}
                             <line
                                 key={`${lineId}-outline`}
                                 x1={from.x} y1={from.y}
@@ -571,12 +599,11 @@ const GameBoard = () => {
                             />
                         </>
                     );
-                    addedLines.add(lineId); // Prevent this line from being added again
+                    addedLines.add(lineId);
                 }
             });
         });
 
-        // Return the SVG containing all lines
         return (
             <svg className="board-lines" width={boardSize} height={boardSize}>
                 {lines}
@@ -586,11 +613,12 @@ const GameBoard = () => {
 
 
 
+
     return (
-        <div className="flex flex-col items-center h-screen justify-around  py-8  overflow-hidden scrollbar-hide ">
-            <div className='flex gap-16 mb-12'>
+        <div className="flex flex-col items-center justify-start sm:justify-around min-h-screen py-8 overflow-hidden scrollbar-hide mt-16 md:mt-24 xl:mt-0">
+            <div className='flex flex-col sm:flex-row gap-4 sm:gap-2 md:gap-16 mb-8 sm:mb-12'>
                 {/* Computer status panel */}
-                <div className=" w-96 h-[100px]  flex justify-around items-center text-white"
+                <div className="h-[68px] w-64 sm:w-64 md:w-80 sm:h-[68px] md:h-[84px] lg:w-96 lg:h-[100px]  flex justify-around items-center text-white"
                     style={{
                         backgroundImage: `url(${innerbutton})`,
                         backgroundSize: "cover",
@@ -604,7 +632,7 @@ const GameBoard = () => {
                 </div>
 
                 {/* Player status panel */}
-                <div className=" w-96 h-[100px]  flex justify-around items-center text-white"
+                <div className="h-[68px] w-64 sm:w-64 md:w-80 sm:h-[68px] md:h-[84px] lg:w-96 lg:h-[100px]  flex justify-around items-center text-white"
                     style={{
                         backgroundImage: `url(${innerbutton})`,
                         backgroundSize: "cover",
@@ -621,7 +649,7 @@ const GameBoard = () => {
 
 
             {/* Game board */}
-            <div className="box relative w-auto h-auto bg-[#f5e1c0] rounded-lg shadow-xl"
+            <div className="box relative max-w-[90%] xxs:max-w-[96%] flex-col justify-center items-center mx-auto w-auto h-auto bg-[#f5e1c0] rounded-lg shadow-xl"
             >
                 {/* Board lines */}
                 {renderBoardLines()}

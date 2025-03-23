@@ -93,18 +93,15 @@
     @apply h-10 w-10 rounded-full absolute transform -translate-x-1/2 -translate-y-1/2 
     transition-all duration-300 flex items-center justify-center cursor-pointer shadow-md z-10;
   }
-  
+
   .piece-tiger {
-    @apply bg-game-tiger;
-    height: 60px;
-    width: 60px;
+    @apply bg-game-tiger w-14 h-14 sm:w-14 sm:h-14 lg:w-16 lg:h-16 max-sm:w-8 max-sm:h-8;
   }
   
   .piece-goat {
-    @apply bg-game-goat;
-    height: 60px;
-    width: 60px;
+    @apply bg-game-goat w-14 h-14 sm:w-14 sm:h-14 lg:w-16 lg:h-16 max-sm:w-8 max-sm:h-8;
   }
+  
 
   .game-board {
     background: url('/assets/parchment-bg.jpg') center center / cover no-repeat;

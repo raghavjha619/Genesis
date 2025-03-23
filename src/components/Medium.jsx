@@ -460,14 +460,29 @@ const Medium = () => {
     };
 
     // Render board point
+    const getBoardSize = () => {
+        const width = window.innerWidth;
+        if (width < 400) return 290; // Extra Small screens
+        if (width < 640) return 360; // Small screens
+        if (width < 768) return 480; // Medium screens
+        return 640; // Default large screens
+    };
+
     const renderBoardPoint = (position) => {
+        const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamically set board size
+
+        const margin = 40;
+        const verticalStretchFactor = 2.4; // Adjust for stretching
+
+        useEffect(() => {
+            const handleResize = () => setBoardSize(getBoardSize());
+            window.addEventListener("resize", handleResize);
+            return () => window.removeEventListener("resize", handleResize);
+        }, []);
+
         const [row, col] = position;
 
         // Calculate position based on triangular grid
-        const boardSize = 640; // Size of the board in pixels
-        const margin = 40;
-        const verticalStretchFactor = 2.4;// Margin from the edges
-
         const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
         const y = margin + (row * (boardSize - 2 * margin) * verticalStretchFactor / (BOARD_SIZE - 1));
 
@@ -482,7 +497,7 @@ const Medium = () => {
                 {/* Board point */}
                 <div
                     className={cn(
-                        " board-point bg-[#91206ff2] border-2 border-[#E5B84B] w-6 h-6  ",
+                        "board-point bg-[#91206ff2] border-2 border-[#E5B84B] sm:w-6 sm:h-6 w-4 h-4",
                         isPossibleMove && "scale-125 bg-red-700 z-10"
                     )}
                     style={{
@@ -510,7 +525,6 @@ const Medium = () => {
                     >
                         {piece === 'tiger' ? <img src={ravan} alt="ravan" width={40} height={40} /> :
                             <img src={hanuman} alt="hanuman" width={40} height={40} />}
-
                     </div>
                 )}
             </React.Fragment>
@@ -518,9 +532,16 @@ const Medium = () => {
     };
 
     const renderBoardLines = () => {
-        const boardSize = 640; // Board size in pixels
+        const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamically set board size
+
         const margin = 40;
-        const verticalStretchFactor = 2.4;// Margin from the edges
+        const verticalStretchFactor = 2.4; // Adjust for stretching
+
+        useEffect(() => {
+            const handleResize = () => setBoardSize(getBoardSize());
+            window.addEventListener("resize", handleResize);
+            return () => window.removeEventListener("resize", handleResize);
+        }, []);
 
         // Convert board position (like [2, 3]) to pixel position for SVG placement.
         const getPosition = (pos) => {
@@ -586,10 +607,10 @@ const Medium = () => {
 
 
     return (
-        <div className="flex flex-col items-center h-screen justify-around  py-8  overflow-hidden scrollbar-hide ">
-            <div className='flex gap-16 mb-12'>
+        <div className="flex flex-col items-center justify-start sm:justify-around min-h-screen py-8 overflow-hidden scrollbar-hide mt-16 md:mt-24 xl:mt-0">
+            <div className='flex flex-col sm:flex-row gap-4 sm:gap-2 md:gap-16 mb-8 sm:mb-12'>
                 {/* Computer status panel */}
-                <div className=" w-96 h-[100px]  flex justify-around items-center text-white"
+                <div className="h-[68px] w-64 sm:w-64 md:w-80 sm:h-[68px] md:h-[84px] lg:w-96 lg:h-[100px]  flex justify-around items-center text-white"
                     style={{
                         backgroundImage: `url(${innerbutton})`,
                         backgroundSize: "cover",
@@ -599,11 +620,11 @@ const Medium = () => {
                     <div className="font-semibold ml-10 ">
                         Computer
                     </div>
-                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/10</div>
+                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/2</div>
                 </div>
 
                 {/* Player status panel */}
-                <div className=" w-96 h-[100px]  flex justify-around items-center text-white"
+                <div className="h-[68px] w-64 sm:w-64 md:w-80 sm:h-[68px] md:h-[84px] lg:w-96 lg:h-[100px]  flex justify-around items-center text-white"
                     style={{
                         backgroundImage: `url(${innerbutton})`,
                         backgroundSize: "cover",
@@ -620,7 +641,7 @@ const Medium = () => {
 
 
             {/* Game board */}
-            <div className="box relative w-auto h-auto bg-[#f5e1c0] rounded-lg shadow-xl"
+            <div className="box relative max-w-[90%] xxs:max-w-[96%] flex-col justify-center items-center mx-auto w-auto h-auto bg-[#f5e1c0] rounded-lg shadow-xl"
             >
                 {/* Board lines */}
                 {renderBoardLines()}
@@ -629,18 +650,18 @@ const Medium = () => {
                 {BOARD_LAYOUT.map(point => renderBoardPoint(point.position))}
 
 
-                    {/* Instructions */}
-            <div className="my-2 text-amber-800 text-base text-center px-4">
-                {gameState.currentPlayer === 'goat' ? (
-                    gameState.goatsPlaced < MAX_GOATS ? (
-                        <p>Place your vanar veer on an empty intersection</p>
+                {/* Instructions */}
+                <div className="my-2 text-amber-800 text-base text-center px-4">
+                    {gameState.currentPlayer === 'goat' ? (
+                        gameState.goatsPlaced < MAX_GOATS ? (
+                            <p>Place your vanar veer on an empty intersection</p>
+                        ) : (
+                            <p>Select a vanar veer and move it to an adjacent empty intersection</p>
+                        )
                     ) : (
-                        <p>Select a vanar veer and move it to an adjacent empty intersection</p>
-                    )
-                ) : (
-                    <p>Computer is thinking...</p>
-                )}
-            </div>
+                        <p>Computer is thinking...</p>
+                    )}
+                </div>
 
                 {/* Game over overlay */}
                 {gameState.gameOver && (
