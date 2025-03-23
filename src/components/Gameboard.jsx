@@ -194,6 +194,7 @@ const GameBoard = () => {
                     gameOver: true,
                     winner: 'goat'
                 }));
+                playSound(SOUNDS.goatWon);
                 toast.success("Goats win! Ravan are trapped.");
             }
         }
