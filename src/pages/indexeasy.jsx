@@ -5,17 +5,12 @@ import { Link } from "react-router-dom";
 import EasyGame from "../components/BaghChal.jsx";
 import { Button } from '../components/ui/Button.jsx';
 import bgImage from "../assets/Frame.jpg";
+import { useSound } from "../components/SoundContext.jsx";
 
 
 const Indexeasy = () => {
-  const [isMuted, setIsMuted] = useState(false);
+  const { isMuted, toggleMute } = useSound(); // Get global mute state
 
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-    if (audio) {
-      audio.muted = !isMuted;
-    }
-  };
   return (
     <>
       {/* Background Blur Image */}
@@ -27,7 +22,7 @@ const Indexeasy = () => {
       <div className="min-h-screen absolute w-full bg-transparent overflow-hidden scrollbar-hide">
         {/* Navigation Buttons */}
         <div className="flex justify-between items-center px-10 pt-10 absolute top-0 w-full">
-          <Link to="/">
+          <Link to="/" >
             <Button
               variant="ghost"
               size="icon"
@@ -37,18 +32,16 @@ const Indexeasy = () => {
             </Button>
           </Link>
 
-          <div className="flex gap-4">
+          <div className="flex flex-col gap-4">
             {/* Mute/Unmute Button */}
-            <div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleMute}
-                className="text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-black transition-colors"
-              >
-                {isMuted ? "Unmute 🔊" : "Mute 🔇"}
-              </Button>
-            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleMute}
+              className="text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-[#e4d035] transition-colors"
+            >
+              {isMuted ? "Unmute" : "Mute"}
+            </Button>
 
 
             {/* Retry Button */}
