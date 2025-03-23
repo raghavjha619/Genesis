@@ -5,6 +5,20 @@ import { RefreshCw } from 'lucide-react';
 import ravan from "../assets/ravan.svg"
 import hanuman from "../assets/hanuman.svg"
 import innerbutton from "../assets/innerbutton.png"
+import tigerWon from '../assets/ravan_laugh2.mp3';
+import goatWin from "../assets/goat_win.mp3";
+import kill from "../assets/tiger_kill1.mp3" ;
+const SOUNDS = {
+    tigerKill: kill,
+    goatWon:  goatWin,
+    tigerWin: tigerWon,
+};
+const playSound = (soundFile) => {
+    if (soundFile) {
+        const audio = new Audio(soundFile);
+        audio.play().catch(error => console.error('Sound playback error:', error));
+    }
+};
 
 const BOARD_SIZE = 11;
 const MAX_GOATS = 15;
@@ -148,12 +162,13 @@ const Medium = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >= 10) {
+        if (gameState.goatsCaptured >= 3) {
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
                 winner: 'tiger'
             }));
+            playSound(SOUNDS.tigerWin);
             toast.success("Ravan win! They captured 3 vanar veer.");
             return;
         }
@@ -313,6 +328,7 @@ const Medium = () => {
                         if (newBoard[middleRow][middleCol] === 'goat') {
                             newBoard[middleRow][middleCol] = null;
                             goatsCaptured++;
+                            playSound(SOUNDS.tigerKill);
                             toast("A goat was captured!", {
                                 style: { backgroundColor: '#FF7F50', color: 'white' }
                             });
@@ -412,6 +428,7 @@ const Medium = () => {
                 if (newBoard[middleRow][middleCol] === 'goat') {
                     newBoard[middleRow][middleCol] = null;
                     goatsCaptured++;
+                    playSound(SOUNDS.tigerKill);
                     toast("A goat was captured!", {
                         style: { backgroundColor: '#FF7F50', color: 'white' }
                     });
@@ -431,6 +448,7 @@ const Medium = () => {
                 gameOver: true,
                 winner: 'goat'
             }));
+            playSound(SOUNDS.goatWon);
             toast.success("Goats win! Ravan are trapped.");
         }
     };

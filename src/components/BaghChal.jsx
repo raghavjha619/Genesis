@@ -6,9 +6,17 @@ import ravan from "../assets/ravan.svg"
 import hanuman from "../assets/hanuman.svg"
 import './ui/border.css'
 import innerbutton from "../assets/innerbutton.png"
+import tigerWon from '../assets/ravan_laugh2.mp3';
+import goatWin from "../assets/goat_win.mp3";
+import kill from "../assets/tiger_kill1.mp3" ;
 const BOARD_SIZE = 7;
 const MAX_GOATS = 5;
 const Ravan_COUNT = 1;
+const SOUNDS = {
+    tigerKill: kill,
+    goatWon:  goatWin,
+    tigerWin: tigerWon,
+};
 //first commit
 const BOARD_LAYOUT = [
     // Top row
@@ -79,6 +87,12 @@ const getMiddlePosition = (pos1, pos2) => {
     }
     return null;
 };
+const playSound = (soundFile) => {
+    if (soundFile) {
+        const audio = new Audio(soundFile);
+        audio.play().catch(error => console.error('Sound playback error:', error));
+    }
+};
 
 const BaghChal = () => {
     const [gameState, setGameState] = useState({
@@ -110,6 +124,7 @@ const BaghChal = () => {
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
         if (gameState.goatsCaptured >= 2) {
+            playSound(SOUNDS.tigerWin);
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
@@ -277,6 +292,7 @@ const BaghChal = () => {
                         if (newBoard[middleRow][middleCol] === 'goat') {
                             newBoard[middleRow][middleCol] = null;
                             goatsCaptured++;
+                            playSound(SOUNDS.tigerKill);
                             toast("A goat was captured!", {
                                 style: { backgroundColor: '#FF7F50', color: 'white' }
                             });
@@ -376,6 +392,7 @@ const BaghChal = () => {
                 if (newBoard[middleRow][middleCol] === 'goat') {
                     newBoard[middleRow][middleCol] = null;
                     goatsCaptured++;
+                    playSound(SOUNDS.tigerKill);
                     toast("A goat was captured!", {
                         style: { backgroundColor: '#FF7F50', color: 'white' }
                     });
@@ -395,6 +412,7 @@ const BaghChal = () => {
                 gameOver: true,
                 winner: 'goat'
             }));
+            playSound(SOUNDS.goatWon);
             toast.success("Goats win! Ravan are trapped.");
         }
     };
