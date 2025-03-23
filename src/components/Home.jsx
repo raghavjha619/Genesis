@@ -111,16 +111,16 @@ const Home = () => {
                 <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
                     <div
                         ref={difficultyRef}
-                        className="relative max-w-lg  min-w-[50%] mx-auto rounded-lg p-12 flex flex-col items-center shadow-lg bg-[#f5e1c0] bg-cover border-4 border-[#b08968] text-[#5a4631] font-[Cinzel Decorative] rules-popup"
+                        className="relative max-w-lg  min-w-[40%] mx-auto rounded-lg p-4 sm:p-8 md:p-12 flex flex-col items-center shadow-lg bg-[#f5e1c0] bg-cover border-4 border-[#b08968] text-[#5a4631] font-[Cinzel Decorative] rules-popup"
                     >
 
                         {/* Title Section */}
-                        <div className="mb-16 text-4xl font-bold uppercase text-center w-full font-Inter">
+                        <div className="md:mb-16 my-8 text-2xl xs:text-3xl md:text-4xl font-bold uppercase text-center w-full font-Inter">
                             Select Difficulty
                         </div>
 
                         {/* Difficulty Options in a Row */}
-                        <div className="flex justify-center gap-4">
+                        <div className="flex flex-col justify-center gap-4">
                             <Link className="flex hover:scale-105 transition-transform duration-300" to="/easygame">
                                 <img src={easy} alt="Easy" className="w-96 mb-2" />
                             </Link>

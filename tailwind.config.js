@@ -6,6 +6,9 @@ export default {
       Inter: [ "Inter"],
     },
     extend: {
+      screens: {
+        xxs: "400px",
+      },
       colors: {
         border: "hsl(214.3, 31.8%, 91.4%)", // Same as the CSS variable
         "game-background": "hsl(260, 60%, 96%)",
