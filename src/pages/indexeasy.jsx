@@ -26,7 +26,7 @@ const Indexeasy = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-[#e4d035] transition-colors"
+              className=" text-xl text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-[#e4d035] transition-colors"
             >
               Back
             </Button>
@@ -38,7 +38,7 @@ const Indexeasy = () => {
               variant="ghost"
               size="icon"
               onClick={toggleMute}
-              className="text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-[#e4d035] transition-colors"
+              className=" text-xl text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg py-5 px-1 hover:bg-[#e4d035] transition-colors  w-auto "
             >
               {isMuted ? "Unmute" : "Mute"}
             </Button>
@@ -49,7 +49,7 @@ const Indexeasy = () => {
               variant="ghost"
               size="icon"
               onClick={() => window.location.reload()}
-              className="text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-[#e4d035] transition-colors"
+              className=" text-xl text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-[#e4d035] transition-colors"
             >
               Retry
             </Button>

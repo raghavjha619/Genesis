@@ -8,16 +8,12 @@ import innerbutton from "../assets/innerbutton.png"
 import tigerWon from '../assets/ravan_laugh2.mp3';
 import goatWin from "../assets/goat_win.mp3";
 import kill from "../assets/tiger_kill1.mp3" ;
+import { useSound } from "./SoundContext";
+
 const SOUNDS = {
     tigerKill: kill,
     goatWon:  goatWin,
     tigerWin: tigerWon,
-};
-const playSound = (soundFile) => {
-    if (soundFile) {
-        const audio = new Audio(soundFile);
-        audio.play().catch(error => console.error('Sound playback error:', error));
-    }
 };
 
 const BOARD_SIZE = 11;
@@ -132,6 +128,16 @@ const getMiddlePosition = (pos1, pos2) => {
 
 
 const Medium = () => {
+
+    const {isMuted} = useSound();
+    const playSound = (soundFile) => {   
+        if (isMuted === false && soundFile) { // Only play if not muted
+            const audio = new Audio(soundFile);
+            audio.play().catch(error => console.error('Sound playback error:', error));
+        }
+    };
+
+
     const [gameState, setGameState] = useState({
         board: Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null)),
         currentPlayer: 'goat',
@@ -638,7 +644,7 @@ const Medium = () => {
                     <div className="font-semibold ml-10 ">
                         Computer
                     </div>
-                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/2</div>
+                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/3</div>
                 </div>
 
                 {/* Player status panel */}
