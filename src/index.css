@@ -178,3 +178,35 @@
     opacity: 1;
   }
 }
+
+
+
+
+
+
+/* Custom Scrollbar for WebKit browsers (Chrome, Edge, Safari) */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 10px; /* Slim width */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f5e1c0; /* Matches parchment background */
+  border-radius: 10px; /* Soft edges */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #b08968; /* Aged brownish scrollbar */
+  border-radius: 10px; /* Rounded for smooth look */
+  border: 3px solid #f5e1c0; /* Blends into background */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #8a6741; /* Darker shade on hover */
+}
+
+/* Firefox scrollbar */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #b08968 #f5e1c0;
+}
+
