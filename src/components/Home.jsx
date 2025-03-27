@@ -11,7 +11,7 @@ import { Button } from "./ui/Button.jsx";
 import { ArrowLeft } from "lucide-react";
 import asset1 from "../assets/ravancap.svg";
 import asset2 from "../assets/vanarveerwin.svg";
-import bgscroll from "../assets/scrollbg.png";
+import bgscroll from "../assets/scroll.png";
 
 const Home = () => {
   const [showRules, setShowRules] = useState(false);
@@ -70,7 +70,7 @@ const Home = () => {
       {/* Rules Pop-up */}
       {showRules && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div className="h-[90%] w-[80%] relative">
+          <div  className="h-[90%] w-[80%] relative">
             {/* Background Image (Stretched without Cropping) */}
             <img
               src={bgscroll}
@@ -79,20 +79,20 @@ const Home = () => {
             />
 
             {/* Rules Popup (Centered, Scrollable, Hidden Scrollbar) */}
-            <div className="bg-violet-400 absolute top-1/2 left-1/2 h-[80%] w-[65%] transform -translate-x-1/2 -translate-y-1/2 p-1 overflow-y-auto max-h-full custom-scrollbar">
+            <div ref={rulesRef} className=" absolute top-1/2 left-1/2 h-[80%] w-[65%] transform -translate-x-1/2 -translate-y-1/2 p-1 overflow-y-auto max-h-full custom-scrollbar">
               {/* Title */}
-              <h2 className="text-xl sm:text-2xl lg:text-4xl font-bold mb-6 text-center">
-                How to Play Baghchal
+              <h2 className="text-xl sm:text-2xl lg:text-4xl font-bold mb-6 text-center text-[#4a321f] ">
+                How to Play Vijaypath
               </h2>
 
               {/* Game Rules Content */}
-              <div className="space-y-6 sm:text-xl">
-                <p>
-                  Baghchal is a traditional board game from Nepal, played on a{" "}
-                  <strong>5×5 grid.</strong>
+              <div className="space-y-6 sm:text-xl text-[#964B00] font-medium ">
+                <p className="">
+                  Vijaypath is a strategic board game played on a grid, where
+                  two sides compete with distinct roles and objectives.
                 </p>
 
-                <h3 className="font-semibold text-xl sm:text-xl lg:text-3xl">
+                <h3 className="font-bold text-xl sm:text-xl lg:text-3xl text-[#4a321f]">
                   Objective
                 </h3>
                 <p>
@@ -104,7 +104,7 @@ const Home = () => {
                   move.
                 </p>
 
-                <h3 className="font-semibold text-xl sm:text-xl lg:text-3xl">
+                <h3 className="font-bold text-xl sm:text-xl lg:text-3xl text-[#4a321f]">
                   Game Play
                 </h3>
                 <ul className="list-disc pl-8 space-y-4">
@@ -133,7 +133,9 @@ const Home = () => {
                     from moving.
                   </li>
                 </ul>
-                <h3 className="font-semibold text-xl sm:text-xl lg:text-3xl mt-6">Examples</h3>
+                <h3 className="font-bold text-xl sm:text-xl lg:text-3xl mt-6 text-[#4a321f] ">
+                  Examples
+                </h3>
                 <p className="text-lg sm:text-xl">
                   <strong>Example 1:</strong> Pictorial representation of
                   possible moves for Ravan
@@ -161,14 +163,27 @@ const Home = () => {
                     />
                   </div>
                 </div>
+                {/* <p className="text-lg sm:text-xl mt-6">
+                  <strong>Example 3:</strong> Vanarveers blocking a Ravan, this
+                  is an example of a victory for Vanarveers.
+                </p>
+                <div className="flex sm:flex-row flex-col gap-4 mt-4 w-full justify-around">
+                  <div className="flex flex-col text-center">
+                    <img
+                      src={asset2}
+                      alt="Example 2 Image"
+                      className="rounded-lg shadow-md max-h-[400px] object-contain mx-auto"
+                    />
+                  </div>
+                </div> */}
               </div>
 
               {/* Start Playing Button */}
               <Button
-                className="w-full mt-8 py-4 bg-brown-700 text-brown-800 text-4xl font-bold hover:text-brown-900 rounded-xl"
+                className="w-full mt-8 py-4 bg-brown-700 text-brown-800 text-4xl font-bold hover:text-brown-900 rounded-xl text-[#4a321f] "
                 onClick={() => setShowRules(false)}
               >
-                🎭 Start Playing
+                 Start Playing
               </Button>
             </div>
           </div>
