@@ -9,6 +9,9 @@ import hard from "../assets/hard.svg";
 import RulesIcon from "../assets/Rules.svg";
 import { Button } from "./ui/Button.jsx";
 import { ArrowLeft } from "lucide-react";
+import asset1 from "../assets/ravancap.svg";
+import asset2 from "../assets/vanarveerwin.svg";
+import bgscroll from "../assets/scrollbg.png";
 
 const Home = () => {
   const [showRules, setShowRules] = useState(false);
@@ -67,89 +70,107 @@ const Home = () => {
       {/* Rules Pop-up */}
       {showRules && (
         <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in">
-          <div
-            ref={rulesRef}
-            className="max-w-2xl w-full rounded-lg p-10 relative shadow-lg rules-popup overflow-y-auto max-h-screen custom-scrollbar"
-            style={{
-              backgroundColor: "#f5e1c0", // Warm parchment color
-              backgroundImage: "url('/path-to-texture.jpg')", // Subtle texture
-              backgroundSize: "cover",
-              border: "8px solid #b08968", // Aged brownish border
-              fontFamily: "'Cinzel Decorative', serif", // Ancient-style font
-              color: "#4a321f", // Darker brown for readability
-              fontSize: "26px", // Large text for elderly users
-              lineHeight: "1.8", // Spaced-out text
-              maxHeight: "90vh", // Keeps content within screen
-              overflowY: "auto", // Enables smooth scrolling
-              scrollbarWidth: "thin", // For Firefox
-              scrollbarColor: "#b08968 #f5e1c0", // Scroll thumb and track color
-            }}
-          >
-            <h2 className="text-5xl font-bold mb-6 text-center">
-              🎲 How to Play Baghchal
-            </h2>
-            <div className="space-y-6 text-3xl">
-              <p>
-                Baghchal is a traditional board game from Nepal, played on a{" "}
-                <strong>5×5 grid.</strong>
-              </p>
+          <div className="h-[90%] w-[80%] relative">
+            {/* Background Image (Stretched without Cropping) */}
+            <img
+              src={bgscroll}
+              alt="Background"
+              className="h-full w-full object-fill absolute -z-10"
+            />
 
-              <h3 className="font-semibold text-4xl">🎯 Objective</h3>
-              <p>
-                <strong>Ravan (👹)</strong>: Capture <strong>Vanarveers</strong>{" "}
-                by jumping over them.
-              </p>
-              <p>
-                <strong>Vanarveer (🐵)</strong>: Block all Ravans so they cannot
-                move.
-              </p>
+            {/* Rules Popup (Centered, Scrollable, Hidden Scrollbar) */}
+            <div className="bg-violet-400 absolute top-1/2 left-1/2 h-[80%] w-[65%] transform -translate-x-1/2 -translate-y-1/2 p-1 overflow-y-auto max-h-full custom-scrollbar">
+              {/* Title */}
+              <h2 className="text-xl sm:text-2xl lg:text-4xl font-bold mb-6 text-center">
+                How to Play Baghchal
+              </h2>
 
-              <h3 className="font-semibold text-4xl">🕹️ Game Play</h3>
-              <ul className="list-disc pl-8 space-y-4">
-                <li>
-                  You play as <strong>Vanarveer</strong> and the computer plays
-                  as <strong>Ravan.</strong>
-                </li>
-                <li>
-                  Start by placing your <strong>all of your Vanarveers</strong>{" "}
-                  on any empty intersection.
-                </li>
-                <li>
-                  Ravans can move to adjacent empty intersections or{" "}
-                  <strong>jump over a Vanarveer</strong> to capture it.
-                </li>
-                <li>
-                  Once all Vanarveers are placed, you can move them to adjacent
-                  empty intersections.
-                </li>
-                <li>
-                  <strong>Ravans win</strong> if they capture{" "}
-                  <strong>sufficient Vanarveers.</strong>
-                </li>
-                <li>
-                  <strong>Vanarveers win</strong> if they block all Ravans from
-                  moving.
-                </li>
-              </ul>
-
-              {/* <div className="mt-6">
-                <h3 className="font-semibold text-4xl">📌 Examples</h3>
+              {/* Game Rules Content */}
+              <div className="space-y-6 sm:text-xl">
                 <p>
-                  ✅ <strong>Example 1:</strong> A Ravan capturing a Vanarveer
+                  Baghchal is a traditional board game from Nepal, played on a{" "}
+                  <strong>5×5 grid.</strong>
                 </p>
 
+                <h3 className="font-semibold text-xl sm:text-xl lg:text-3xl">
+                  Objective
+                </h3>
                 <p>
-                  ✅ <strong>Example 2:</strong> Vanarveers blocking a Ravan
+                  <strong>Ravan</strong>: Capture <strong>Vanarveers</strong> by
+                  jumping over them.
                 </p>
-              </div> */}
+                <p>
+                  <strong>Vanarveer</strong>: Block all Ravans so they cannot
+                  move.
+                </p>
+
+                <h3 className="font-semibold text-xl sm:text-xl lg:text-3xl">
+                  Game Play
+                </h3>
+                <ul className="list-disc pl-8 space-y-4">
+                  <li>
+                    You play as <strong>Vanarveer</strong> and the computer
+                    plays as <strong>Ravan.</strong>
+                  </li>
+                  <li>
+                    Start by placing all your <strong>Vanarveers</strong> on any
+                    empty intersection.
+                  </li>
+                  <li>
+                    Ravans can move to adjacent empty intersections or{" "}
+                    <strong>jump over a Vanarveer</strong> to capture it.
+                  </li>
+                  <li>
+                    Once all Vanarveers are placed, you can move them to
+                    adjacent empty intersections.
+                  </li>
+                  <li>
+                    <strong>Ravans win</strong> if they capture{" "}
+                    <strong>sufficient Vanarveers.</strong>
+                  </li>
+                  <li>
+                    <strong>Vanarveers win</strong> if they block all Ravans
+                    from moving.
+                  </li>
+                </ul>
+                <h3 className="font-semibold text-xl sm:text-xl lg:text-3xl mt-6">Examples</h3>
+                <p className="text-lg sm:text-xl">
+                  <strong>Example 1:</strong> Pictorial representation of
+                  possible moves for Ravan
+                </p>
+                <div className="flex sm:flex-row flex-col gap-4 mt-4 w-full justify-around">
+                  <div className="flex flex-col text-center">
+                    <img
+                      src={asset1}
+                      alt="Example 1 Image"
+                      className="rounded-lg shadow-md max-h-[400px] object-contain mx-auto"
+                    />
+                  </div>
+                </div>
+
+                <p className="text-lg sm:text-xl mt-6">
+                  <strong>Example 2:</strong> Vanarveers blocking a Ravan, this
+                  is an example of a victory for Vanarveers.
+                </p>
+                <div className="flex sm:flex-row flex-col gap-4 mt-4 w-full justify-around">
+                  <div className="flex flex-col text-center">
+                    <img
+                      src={asset2}
+                      alt="Example 2 Image"
+                      className="rounded-lg shadow-md max-h-[400px] object-contain mx-auto"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Start Playing Button */}
+              <Button
+                className="w-full mt-8 py-4 bg-brown-700 text-brown-800 text-4xl font-bold hover:text-brown-900 rounded-xl"
+                onClick={() => setShowRules(false)}
+              >
+                🎭 Start Playing
+              </Button>
             </div>
-
-            <Button
-              className="w-full mt-8 py-4 bg-brown-700 text-brown-800 text-4xl font-bold hover:text-brown-900 rounded-xl"
-              onClick={() => setShowRules(false)}
-            >
-              🎭 Start Playing
-            </Button>
           </div>
         </div>
       )}
@@ -195,3 +216,34 @@ const Home = () => {
 };
 
 export default Home;
+
+{
+  /* <h3 className="font-semibold text-4xl mt-6">Examples</h3>
+<p className="text-3xl">
+  <strong>Example 1:</strong> Pictorial representation of
+  possible moves for Ravan
+</p>
+<div className="flex sm:flex-row flex-col gap-4 mt-4 w-full justify-around">
+  <div className="flex flex-col text-center">
+    <img
+      src={asset1}
+      alt="Example 1 Image"
+      className="rounded-lg shadow-md max-h-[500px] object-contain mx-auto"
+    />
+  </div>
+</div>
+
+<p className="text-3xl mt-6">
+  <strong>Example 2:</strong> Vanarveers blocking a Ravan, this
+  is an example of a victory for Vanarveers.
+</p>
+<div className="flex sm:flex-row flex-col gap-4 mt-4 w-full justify-around">
+  <div className="flex flex-col text-center">
+    <img
+      src={asset2}
+      alt="Example 2 Image"
+      className="rounded-lg shadow-md max-h-[500px] object-contain mx-auto"
+    />
+  </div>
+</div> */
+}
