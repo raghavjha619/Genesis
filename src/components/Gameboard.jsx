@@ -134,7 +134,7 @@ const GameBoard = () => {
         }
     };
 
-    
+
     const [gameState, setGameState] = useState({
         board: Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null)),
         currentPlayer: 'goat',
@@ -165,7 +165,7 @@ const GameBoard = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >= 3) {
+        if (gameState.goatsCaptured >= 5) {
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
@@ -653,7 +653,7 @@ const GameBoard = () => {
                     <div className="font-semibold ml-10 ">
                         Computer
                     </div>
-                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/3</div>
+                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/5</div>
                 </div>
 
                 {/* Player status panel */}
