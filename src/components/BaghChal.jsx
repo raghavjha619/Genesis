@@ -171,6 +171,7 @@ const BaghChal = () => {
                     gameOver: true,
                     winner: 'goat'
                 }));
+                playSound(SOUNDS.goatWon);
                 toast.success("Goats win! Ravan are trapped.");
             }
         }
