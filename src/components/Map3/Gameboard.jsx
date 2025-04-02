@@ -1,62 +1,60 @@
 import React, { useState, useEffect } from 'react';
-import { cn } from '../components/lib/util';
+import { cn } from '../lib/util';
 import { toast } from 'sonner';
 import { RefreshCw } from 'lucide-react';
-import ravan from "../assets/ravan.svg"
-import hanuman from "../assets/hanuman.svg"
-import innerbutton from "../assets/innerbutton.png"
-import tigerWon from '../assets/ravan_laugh2.mp3';
-import goatWin from "../assets/goat_win.mp3";
-import kill from "../assets/tiger_kill1.mp3" ;
-import { useSound } from "./SoundContext";
+import ravan from "../../assets/ravan.svg"
+import hanuman from "../../assets/hanuman.svg"
+import innerbutton from "../../assets/innerbutton.png"
+import tigerWon from '../../assets/ravan_laugh2.mp3';
+import goatWin from "../../assets/goat_win.mp3";
+import kill from "../../assets/tiger_kill1.mp3" ;
+import { useSound } from "../SoundContext";
 
+
+const BOARD_SIZE = 5;
+const MAX_GOATS = 20;
+const Ravan_COUNT = 5;
 const SOUNDS = {
     tigerKill: kill,
     goatWon:  goatWin,
     tigerWin: tigerWon,
 };
-
-const BOARD_SIZE = 11;
-const MAX_GOATS = 10;
-const Ravan_COUNT = 2;
 //first commit
 const BOARD_LAYOUT = [
     // Top row
-
-    { position: [0, 5], connections: [ [1, 6], [1, 4]] },
+    { position: [0, 0], connections: [[0, 1], [1, 0], [1, 1]] },
+    { position: [0, 1], connections: [[0, 0], [0, 2], [1, 1]] },
+    { position: [0, 2], connections: [[0, 1], [1, 1], [0, 3], [1, 2], [1, 3]] },
+    { position: [0, 3], connections: [[0, 2], [0, 4], [1, 3]] },
+    { position: [0, 4], connections: [[0, 3], [1, 4], [1, 3]] },
 
     // Second row
-    { position: [1, 0], connections: [[2, 0],[1,4]] },
-
-    
-    { position: [1, 4], connections: [[0, 5], [1, 6], [1,0],[2, 3]] },
-    { position: [1, 6], connections: [[0, 5], [1, 4],  [2, 7],[1,10]] },
-    
-    { position: [1, 10], connections: [ [2, 10],[1,6]] },
-
+    { position: [1, 0], connections: [[0, 0], [1, 1], [2, 0]] },
+    { position: [1, 1], connections: [[0, 0], [0, 1], [0, 2], [1, 2], [2, 1], [2, 2], [1, 0], [2, 0]] },
+    { position: [1, 2], connections: [[0, 2], [1, 1], [1, 3], [2, 2]] },
+    { position: [1, 3], connections: [[0, 3], [0, 4], [1, 2], [1, 4], [2, 4], [2, 2], [2, 3], [0, 2]] },
+    { position: [1, 4], connections: [[0, 4], [1, 3], [2, 4]] },
 
     // Middle row
-    { position: [2, 0], connections: [[1, 0], [2,3], [3, 0]] },
-    
-    { position: [2, 3], connections: [[1, 4], [2,0], [3, 2], [2, 7]] },
-    { position: [2, 7], connections: [[1, 6],  [3, 8], [2, 3],[2,10]] },
-   
-    { position: [2, 10], connections: [[1, 10],  [3, 10],[2,7]] },
+    { position: [2, 0], connections: [[1, 0], [2, 1], [3, 0], [3, 1], [1, 1]] },
+    { position: [2, 1], connections: [[1, 1], [2, 0], [2, 2], [3, 1]] },
+    { position: [2, 2], connections: [[1, 1], [1, 2], [1, 3], [2, 1], [2, 3], [3, 1], [3, 2], [3, 3]] },
+    { position: [2, 3], connections: [[1, 3], [2, 2], [2, 4], [3, 3]] },
+    { position: [2, 4], connections: [[1, 4], [1, 3], [3, 3], [2, 3], [3, 4]] },
 
     // Fourth row
-    { position: [3, 0], connections: [[2, 0],[3,2]] },
-    
-    { position: [3, 2], connections: [[4, 1],  [2, 3], [3, 8],[3,0]] },
-    { position: [3, 8], connections: [[2, 7], [4, 9], [3, 2],[3,10]] },
-    
-    { position: [3, 10], connections: [[2, 10],[3,8]] },
+    { position: [3, 0], connections: [[2, 0], [3, 1], [4, 0]] },
+    { position: [3, 1], connections: [[2, 1], [2, 0], [2, 2], [3, 0], [3, 2], [4, 0], [4, 1], [4, 2]] },
+    { position: [3, 2], connections: [[2, 2], [3, 1], [3, 3], [4, 2]] },
+    { position: [3, 3], connections: [[2, 2], [2, 3], [3, 2], [3, 4], [4, 2], [4, 3], [2, 4], [4, 4]] },
+    { position: [3, 4], connections: [[2, 4], [3, 3], [4, 4]] },
 
     // Bottom row
-    
-    { position: [4, 1], connections: [ [3, 2], [4, 9]] },
-    { position: [4, 9], connections: [[3, 8], [4, 1]] },
-    
-
+    { position: [4, 0], connections: [[3, 0], [3, 1], [4, 1]] },
+    { position: [4, 1], connections: [[3, 1], [4, 0], [4, 2]] },
+    { position: [4, 2], connections: [[3, 2], [3, 3], [4, 1], [4, 3], [3, 1]] },
+    { position: [4, 3], connections: [[3, 3], [4, 2], [4, 4]] },
+    { position: [4, 4], connections: [[3, 4], [4, 3], [3, 3]] },
 ];
 
 // Helper function to find connections for a position
@@ -77,80 +75,56 @@ const positionInList = (pos, list) => {
     return list.some(p => positionsEqual(p, pos));
 };
 
-// Find the middle position between two positions
-// Function to get the middle position for tiger jumps
 const getMiddlePosition = (pos1, pos2) => {
-    const [row1, col1] = pos1;
-    const [row2, col2] = pos2;
+    // Only consider positions that are two steps away
+    if (Math.abs(pos1[0] - pos2[0]) === 2 && pos1[1] === pos2[1]) {
+        // Vertical two-step move
+        return [Math.min(pos1[0], pos2[0]) + 1, pos1[1]];
+    }
+    if (Math.abs(pos1[1] - pos2[1]) === 2 && pos1[0] === pos2[0]) {
+        // Horizontal two-step move
+        return [pos1[0], Math.min(pos1[1], pos2[1]) + 1];
+    }
+    if (Math.abs(pos1[0] - pos2[0]) === 2 && Math.abs(pos1[1] - pos2[1]) === 2) {
+        // Diagonal two-step move
+        const middlePos = [Math.min(pos1[0], pos2[0]) + 1, Math.min(pos1[1], pos2[1]) + 1];
 
-    // Explicit checks for all possible cases based on BOARD_LAYOUT
-    if ((row1 === 0 && col1 === 5 && row2 === 2 && col2 === 3) ||
-        (row1 === 2 && col1 === 3 && row2 === 0 && col2 === 5)) {
-        return [1, 4];
-    }
-
-    if ((row1 === 0 && col1 === 5 && row2 === 2 && col2 === 7) ||
-        (row1 === 2 && col1 === 7 && row2 === 0 && col2 === 5)) {
-        return [1, 6];
-    }
-    if ((row1 === 2 && col1 === 3 && row2 === 2 && col2 === 10) ||
-    (row1 === 2 && col1 === 10 && row2 === 2 && col2 === 3)) {
-    return [2, 7];
-    }
-    if ((row1 === 1&& col1 === 0 && row2 === 1 && col2 === 6) ||
-    (row1 === 1 && col1 === 6 && row2 === 1 && col2 === 0)) {
-    return [1, 4];
-}
-if ((row1 === 1&& col1 === 4 && row2 === 1 && col2 === 10) ||
-(row1 === 1 && col1 === 10 && row2 === 1 && col2 === 4)) {
-return [1, 6];
-}
-if (row1 === 1 && col1 === 4 && row2 === 3 && col2 === 2 ||
-(row1 === 3 && col1 === 2 && row2 === 1 && col2 === 4)) {
-return [2, 3];
-}
-if (row1 === 2 && col1 === 0 && row2 === 2 && col2 === 7 ||
-    (row1 === 2 && col1 === 7 && row2 === 2 && col2 === 0)) {
-    return [2, 3];
-    }
-    if (row1 === 2 && col1 === 3 && row2 === 2 && col2 === 10 ||
-        (row1 === 2 && col1 === 10 && row2 === 2 && col2 === 3)) {
-        return [2, 7];
-        }
-        if (row1 === 3 && col1 === 0 && row2 === 3 && col2 === 8 ||
-            (row1 === 3 && col1 === 8 && row2 === 3 && col2 === 0)) {
-            return [3, 2];
+        // Check if the diagonal move is valid based on board connections
+        const isValidDiagonal = BOARD_LAYOUT.some((point) => {
+            // Check if the starting point is connected to the middle position
+            if (point.position[0] === pos1[0] && point.position[1] === pos1[1]) {
+                return point.connections.some(
+                    (conn) =>
+                        conn[0] === middlePos[0] &&
+                        conn[1] === middlePos[1] &&
+                        // Check if the middle position connects to the destination
+                        BOARD_LAYOUT.some(
+                            (middlePoint) =>
+                                middlePoint.position[0] === middlePos[0] &&
+                                middlePoint.position[1] === middlePos[1] &&
+                                middlePoint.connections.some(
+                                    (endConn) => endConn[0] === pos2[0] && endConn[1] === pos2[1]
+                                )
+                        )
+                );
             }
-            if (row1 === 2 && col1 === 3 && row2 === 4 && col2 === 1 ||
-                (row1 === 4 && col1 === 1 && row2 === 2 && col2 === 3)) {
-                return [3, 2];
-                }
-                if (row1 === 2 && col1 === 7 && row2 === 4 && col2 === 9 ||
-                    (row1 === 4 && col1 === 9 && row2 === 2 && col2 === 7)) {
-                    return [3, 8];
-                    }
-                    if (row1 === 3 && col1 === 2 && row2 === 3 && col2 === 10 ||
-                        (row1 === 3 && col1 === 10 && row2 === 3 && col2 === 2)) {
-                        return [3, 8];
-                        }
-                        if (row1 === 1 && col1 === 10 && row2 === 3 && col2 === 10 ||
-                            (row1 === 3 && col1 === 10 && row2 === 1 && col2 === 10)) {
-                            return [2, 10];
-                            }
-                            if (row1 === 1 && col1 === 0 && row2 === 3 && col2 === 0 ||
-                                (row1 === 3 && col1 === 0 && row2 === 1 && col2 === 0)) {
-                                return [2, 0];
-                                }
-                        
- 
+            return false;
+        });
 
-    // No valid middle position detected
-    return null;
+        if (isValidDiagonal) {
+            return middlePos;
+        }
+    }
+
+    return null; // Invalid move
 };
 
 
 
-const Medium = () => {
+
+
+
+const GameBoard = () => {
 
     const {isMuted} = useSound();
     const playSound = (soundFile) => {   
@@ -177,10 +151,10 @@ const Medium = () => {
         const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
         // Place Ravan at the corners
-        
-        initialBoard[2][3] = 'tiger';
-        initialBoard[2][7] = 'tiger';
-
+        initialBoard[0][0] = 'tiger';
+        initialBoard[0][4] = 'tiger';
+        initialBoard[4][0] = 'tiger';
+        initialBoard[4][4] = 'tiger';
 
         setGameState(prev => ({
             ...prev,
@@ -191,7 +165,7 @@ const Medium = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >= 4) {
+        if (gameState.goatsCaptured >= 5) {
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
@@ -281,55 +255,25 @@ const Medium = () => {
     };
 
     // Function to get diagonal moves
-    // Function to get diagonal moves
     const getDiagonalMoves = (position) => {
-        const [row, col] = position;
-    
-        // Special diagonal moves for specific positions according to BOARD_LAYOUT
-        const diagonalMap = {
-            '0,5': [[1, 4], [1, 6]],
-    
-            '1,0': [[2, 3]], 
-            '1,4': [[0, 5], [2, 3], [1, 0], [1, 6]], 
-            '1,6': [[0, 5], [2, 7], [1, 4], [1, 10]], 
-            '1,10': [[2, 7], [2, 10], [1, 6]],
-    
-            '2,0': [[1, 0], [3, 2]], 
-            '2,3': [[1, 4], [3, 2], [2, 0], [2, 7]], 
-            '2,7': [[1, 6], [3, 8], [2, 3], [2, 10]], 
-            '2,10': [[1, 10], [3, 10], [2, 7]],
-    
-            '3,0': [[2, 0], [3, 2]],
-            '3,2': [[2, 3], [4, 1], [3, 0], [3, 8]], 
-            '3,8': [[2, 7], [4, 9], [3, 2], [3, 10]], 
-            '3,10': [[2, 10], [3, 8]],
-    
-            '4,1': [[3, 2], [4, 9]], 
-            '4,9': [[3, 8], [4, 1]]
-        };
-    
-        // Convert current position to a string key
-        const key = `${row},${col}`;
-    
-        // If the position exists in diagonalMap, return its specific diagonal connections
-        if (diagonalMap[key]) {
-            return diagonalMap[key];
+        // Find the current position object in BOARD_LAYOUT
+        const currentNode = BOARD_LAYOUT.find(node =>
+            node.position[0] === position[0] && node.position[1] === position[1]
+        );
+
+        if (!currentNode) {
+            console.error("Invalid position:", position);
+            return []; // Return empty array if the position is not found
         }
-    
-        // Default general diagonals (only used if no specific rule in BOARD_LAYOUT)
-        const possibleDiagonals = [
-            [row - 1, col - 1], // Top-left
-            [row - 1, col + 1], // Top-right
-            [row + 1, col - 1], // Bottom-left
-            [row + 1, col + 1]  // Bottom-right
-        ];
-    
-        // Return diagonals that are within the bounds of the board
-        return possibleDiagonals.filter(([r, c]) => r >= 0 && r < 5 && c >= 0 && c <= 10);
+
+        // Filter the connections to include only diagonal moves
+        const diagonalMoves = currentNode.connections.filter(([r, c]) => {
+            const isDiagonal = Math.abs(r - position[0]) === 1 && Math.abs(c - position[1]) === 1;
+            return isDiagonal;
+        });
+
+        return diagonalMoves;
     };
-    
-    
-    
 
     // Handle piece selection and movement
     const handlePointClick = (position) => {
@@ -518,10 +462,10 @@ const Medium = () => {
         const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
         // Place Ravan at the corners
-        
-        initialBoard[2][3] = 'tiger';
-        initialBoard[2][7] = 'tiger';
-
+        initialBoard[0][0] = 'tiger';
+        initialBoard[0][4] = 'tiger';
+        initialBoard[4][0] = 'tiger';
+        initialBoard[4][4] = 'tiger';
 
         setGameState({
             board: initialBoard,
@@ -537,21 +481,21 @@ const Medium = () => {
         toast("Game reset!");
     };
 
-    // Render board point
-    const getBoardSize = () => {
-        const width = window.innerWidth;
-        if (width < 400) return 290; // Extra Small screens
-        if (width < 640) return 360; // Small screens
-        if (width < 768) return 480; // Medium screens
-        return 640; // Default large screens
-    };
-
     const renderBoardPoint = (position) => {
-        const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamically set board size
+        const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamic board size
 
-        const margin = 40;
-        const verticalStretchFactor = 2.4; // Adjust for stretching
+        const margin = 40; // Consistent margin from edges
 
+        // Function to determine board size based on screen width
+        function getBoardSize() {
+            const width = window.innerWidth;
+            if (width < 400) return 290; // Extra Small screens
+            if (width < 640) return 360; // Small screens
+            if (width < 768) return 480; // Medium screens
+            return 640; // Default large screens
+        }
+
+        // Update board size on window resize
         useEffect(() => {
             const handleResize = () => setBoardSize(getBoardSize());
             window.addEventListener("resize", handleResize);
@@ -560,12 +504,13 @@ const Medium = () => {
 
         const [row, col] = position;
 
-        // Calculate position based on triangular grid
+        // Calculate position based on dynamic board size
         const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
-        const y = margin + (row * (boardSize - 2 * margin) * verticalStretchFactor / (BOARD_SIZE - 1));
+        const y = margin + (row * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
 
         const piece = gameState.board[row][col];
-        const isSelected = gameState.selectedPiece &&
+        const isSelected =
+            gameState.selectedPiece &&
             gameState.selectedPiece[0] === row &&
             gameState.selectedPiece[1] === col;
         const isPossibleMove = positionInList(position, gameState.possibleMoves);
@@ -592,7 +537,7 @@ const Medium = () => {
                         className={cn(
                             "piece",
                             piece === 'tiger' ? "piece-tiger" : "piece-goat",
-                            isSelected && "shadow-lg ring-2 ring-yellow-300 ring-offset-2 ring-offset-transparent animate-bounce-soft"
+                            isSelected && "shadow-lg ring-2 ring-yellow-400 ring-offset-2 ring-offset-transparent animate-bounce-soft"
                         )}
                         style={{
                             left: `${x}px`,
@@ -601,8 +546,11 @@ const Medium = () => {
                         }}
                         onClick={() => handlePointClick([row, col])}
                     >
-                        {piece === 'tiger' ? <img src={ravan} alt="ravan" width={40} height={40} /> :
-                            <img src={hanuman} alt="hanuman" width={40} height={40} />}
+                        {piece === 'tiger' ? (
+                            <img src={ravan} alt="ravan" className="w-20 h-20" />
+                        ) : (
+                            <img src={hanuman} alt="hanuman" className="w-20 h-20" />
+                        )}
                     </div>
                 )}
             </React.Fragment>
@@ -610,77 +558,84 @@ const Medium = () => {
     };
 
     const renderBoardLines = () => {
-        const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamically set board size
-
+        const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamic board size
         const margin = 40;
-        const verticalStretchFactor = 2.4; // Adjust for stretching
 
+        // Function to determine board size dynamically
+        function getBoardSize() {
+            const width = window.innerWidth;
+            if (width < 400) return 290;
+            if (width < 640) return 360;
+            if (width < 768) return 480;
+            return 640;
+        }
+
+        // Update board size on window resize
         useEffect(() => {
             const handleResize = () => setBoardSize(getBoardSize());
             window.addEventListener("resize", handleResize);
             return () => window.removeEventListener("resize", handleResize);
         }, []);
 
-        // Convert board position (like [2, 3]) to pixel position for SVG placement.
+        // Function to calculate pixel positions
         const getPosition = (pos) => {
             const [row, col] = pos;
             const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
-            const y = margin + (row * (boardSize - 2 * margin) * verticalStretchFactor / (BOARD_SIZE - 1));
+            const y = margin + (row * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
             return { x, y };
         };
 
         const lines = [];
-        const addedLines = new Set(); // Prevent duplicate connections
+        const addedLines = new Set();
 
-        // Iterate through BOARD_LAYOUT to draw connections between points
-        BOARD_LAYOUT.forEach(point => {
+        // Draw lines based on BOARD_LAYOUT
+        BOARD_LAYOUT.forEach((point) => {
             const from = getPosition(point.position);
 
-            // Loop through the connections defined for the current point
-            point.connections.forEach(conn => {
+            point.connections.forEach((conn) => {
                 if (conn[0] < 0 || conn[0] >= BOARD_SIZE || conn[1] < 0 || conn[1] >= BOARD_SIZE) {
-                    return; // Skip out-of-bound connections
+                    return; // Skip invalid connections
                 }
 
                 const to = getPosition(conn);
                 const lineId = `${point.position.join(',')} -> ${conn.join(',')}`;
 
-                if (!addedLines.has(lineId)) {
+                if (!addedLines.has(lineId) && !addedLines.has(`${conn.join(',')} -> ${point.position.join(',')}`)) {
                     lines.push(
                         <>
-                            {/* Outline (Thicker Dark Line) */}
+                            {/* Outer shadow line */}
                             <line
                                 key={`${lineId}-outline`}
                                 x1={from.x} y1={from.y}
                                 x2={to.x} y2={to.y}
-                                stroke="#e39c15" // Black outline
-                                strokeWidth="6" // Make it slightly thicker
+                                stroke="#e39c15"
+                                strokeWidth="6"
                                 strokeLinecap="round"
                             />
 
-                            {/* Main Line */}
+                            {/* Main thinner line */}
                             <line
                                 key={lineId}
                                 x1={from.x} y1={from.y}
                                 x2={to.x} y2={to.y}
-                                stroke="#fff" // White main line
-                                strokeWidth="2" // Keep it thinner
+                                stroke="#fff"
+                                strokeWidth="2"
                                 strokeLinecap="round"
                             />
                         </>
                     );
-                    addedLines.add(lineId); // Track the connection to avoid duplicates
+                    addedLines.add(lineId);
                 }
             });
         });
 
-        // Return the SVG element containing all the drawn lines
         return (
             <svg className="board-lines" width={boardSize} height={boardSize}>
                 {lines}
             </svg>
         );
     };
+
 
 
 
@@ -698,7 +653,7 @@ const Medium = () => {
                     <div className="font-semibold ml-10 ">
                         Computer
                     </div>
-                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/4</div>
+                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/5</div>
                 </div>
 
                 {/* Player status panel */}
@@ -749,7 +704,7 @@ const Medium = () => {
                         </h2>
                         <p className="mb-4">
                             {gameState.winner === 'tiger'
-                                ? "Ravan captured 10 Vanar veer"
+                                ? "Ravan captured 3 Vanar veer"
                                 : "Ravan have been immobilized"}
                         </p>
                         <button
@@ -767,4 +722,4 @@ const Medium = () => {
     );
 };
 
-export default Medium;
+export default GameBoard;
