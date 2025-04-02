@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import MedGame from "../components/Medium.jsx";
+import MedGame from "../components/Map2/Medium.jsx";
 import { Button } from "../components/ui/Button.jsx";
 import { RefreshCw, ArrowLeft, Info } from "lucide-react";
 import bgImage from "../assets/Frame.jpg";

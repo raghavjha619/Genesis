@@ -206,3 +206,16 @@
   scrollbar-color: transparent transparent; /* Fully hides thumb & track */
 }
 
+
+
+
+@keyframes jump {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }  /* 🦘 Jumping up */
+  100% { transform: translateY(0); }
+}
+
+.jump-animation {
+  animation: jump 0.3s ease-in-out;
+}
+

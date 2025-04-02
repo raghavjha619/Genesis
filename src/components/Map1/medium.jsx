@@ -1,15 +1,16 @@
-import React, { createContext, useState, useContext, useEffect } from "react";
-import { cn } from './lib/util';
+import React, { createContext, useState, useContext, useEffect, useRef  } from "react";
+import gsap from "gsap";
+import { cn } from '../lib/util';
 import { toast } from 'sonner';
 import { RefreshCw } from 'lucide-react';
-import ravan from "../assets/ravan.svg"
-import hanuman from "../assets/hanuman.svg"
-import './ui/border.css'
-import innerbutton from "../assets/innerbutton.png"
-import tigerWon from '../assets/ravan_laugh2.mp3';
-import goatWin from "../assets/goat_win.mp3";
-import kill from "../assets/tiger_kill1.mp3" ;
-import { useSound } from "./SoundContext";
+import ravan from "../../assets/ravan.svg"
+import hanuman from "../../assets/hanuman.svg"
+import '.././ui/border.css'
+import innerbutton from "../../assets/innerbutton.png"
+import tigerWon from '../../assets/ravan_laugh2.mp3';
+import goatWin from "../../assets/goat_win.mp3";
+import kill from "../../assets/tiger_kill1.mp3" ;
+import { useSound } from "../SoundContext";
 
 
 const BOARD_SIZE = 7;
@@ -136,7 +137,7 @@ const BaghChal = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >= 2) {
+        if (gameState.goatsCaptured >= 1) {
             playSound(SOUNDS.tigerWin);
             setGameState(prev => ({
                 ...prev,
@@ -484,6 +485,7 @@ const BaghChal = () => {
         }, []);
 
         const [row, col] = position;
+        const pieceRef = useRef(null);
 
         // Calculate position based on triangular grid
         const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
@@ -495,6 +497,24 @@ const BaghChal = () => {
             gameState.selectedPiece[0] === row &&
             gameState.selectedPiece[1] === col;
         const isPossibleMove = positionInList(position, gameState.possibleMoves);
+
+        useEffect(() => {
+            if (pieceRef.current) {
+                const rect = pieceRef.current.getBoundingClientRect(); // Get current position
+                const boardRect = pieceRef.current.parentElement.getBoundingClientRect(); // Get board position
+        
+                const currentX = rect.left - boardRect.left;
+                const currentY = rect.top - boardRect.top;
+        
+                gsap.fromTo(
+                    pieceRef.current,
+                    { x: currentX, y: currentY, opacity: 1, rotate: 0 }, // Start from the old board-relative position
+                    { x: x, y: y, duration: 1, ease: "power2.out", rotate: 360, opacity: 1 } // Move smoothly to new position
+                );
+            }
+        }, [x, y]);
+        
+        
 
         return (
             <React.Fragment key={`point-${row}-${col}`}>
@@ -514,27 +534,29 @@ const BaghChal = () => {
 
                 {/* Piece */}
                 {piece && (
-                    <div
-                        className={cn(
-                            "piece",
-                            piece === "tiger" ? "piece-tiger" : "piece-goat",
-                            isSelected &&
-                            "shadow-lg ring-2 ring-yellow-300 ring-offset-2 ring-offset-transparent animate-bounce-soft"
-                        )}
-                        style={{
-                            left: `${x}px`,
-                            top: `${y}px`,
-                            zIndex: isSelected ? 20 : 10,
-                        }}
-                        onClick={() => handlePointClick([row, col])}
-                    >
-                        {piece === "tiger" ? (
-                            <img src={ravan} alt="ravan" className="w-14 h-14 md:w-20 md:h-20" />
-                        ) : (
-                            <img src={hanuman} alt="hanuman" className="w-14 h-14 md:w-20 md:h-20" />
-                        )}
-                    </div>
-                )}
+                <div
+                    ref={pieceRef} // Attach GSAP animation to this element
+                    className={cn(
+                        "piece",
+                        piece === "tiger" ? "piece-tiger" : "piece-goat",
+                        isSelected && "shadow-lg ring-2 ring-yellow-300 ring-offset-2 ring-offset-transparent"
+                    )}
+                    style={{
+                        position: "absolute",
+                        left: `${x}px`,
+                        top: `${y}px`,
+                        transform: "translate(-50%, -50%)",
+                        zIndex: isSelected ? 20 : 10,
+                    }}
+                    onClick={() => handlePointClick([row, col])}
+                >
+                    {piece === "tiger" ? (
+                        <img src={ravan} alt="ravan" className="w-14 h-14 md:w-20 md:h-20" />
+                    ) : (
+                        <img src={hanuman} alt="hanuman" className="w-14 h-14 md:w-20 md:h-20" />
+                    )}
+                </div>
+            )}
             </React.Fragment>
         );
     };

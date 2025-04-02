@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 
 
-import EasyGame from "../components/BaghChal.jsx";
+import EasyGame from "../components/Map1/easy.jsx";
 import { Button } from '../components/ui/Button.jsx';
 import bgImage from "../assets/Frame.jpg";
 import { useSound } from "../components/SoundContext.jsx";

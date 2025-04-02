@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { cn } from "../components/lib/util";
+import { cn } from "../lib/util";
 import { toast } from "sonner";
 import { RefreshCw } from "lucide-react";
-import ravan from "../assets/ravan.svg";
-import hanuman from "../assets/hanuman.svg";
-import innerbutton from "../assets/innerbutton.png";
-import tigerWon from "../assets/ravan_laugh2.mp3";
-import goatWin from "../assets/goat_win.mp3";
-import kill from "../assets/tiger_kill1.mp3";
-import { useSound } from "./SoundContext";
+import ravan from "../../assets/ravan.svg";
+import hanuman from "../../assets/hanuman.svg";
+import innerbutton from "../../assets/innerbutton.png";
+import tigerWon from "../../assets/ravan_laugh2.mp3";
+import goatWin from "../../assets/goat_win.mp3";
+import kill from "../../assets/tiger_kill1.mp3";
+import { useSound } from "../SoundContext";
 
 const SOUNDS = {
   tigerKill: kill,
@@ -17,8 +17,8 @@ const SOUNDS = {
 };
 
 const BOARD_SIZE = 11;
-const MAX_GOATS = 10;
-const Ravan_COUNT = 2;
+const MAX_GOATS = 5;
+const Ravan_COUNT = 1;
 //first commit
 const BOARD_LAYOUT = [
   // Top row
@@ -307,8 +307,9 @@ const Medium = () => {
 
     // Place Ravan at the corners
 
-    initialBoard[2][3] = "tiger";
-    initialBoard[2][7] = "tiger";
+    initialBoard[0][5] = "tiger";
+    
+   
 
     setGameState((prev) => ({
       ...prev,
@@ -319,7 +320,7 @@ const Medium = () => {
   // Check if the game is over
   useEffect(() => {
     // Tiger wins if they capture 5 or more goats
-    if (gameState.goatsCaptured >= 4) {
+    if (gameState.goatsCaptured >= 2) {
       setGameState((prev) => ({
         ...prev,
         gameOver: true,
@@ -710,8 +711,8 @@ const Medium = () => {
 
     // Place Ravan at the corners
 
-    initialBoard[2][3] = "tiger";
-    initialBoard[2][7] = "tiger";
+    initialBoard[0][5] = "tiger";
+    
 
     setGameState({
       board: initialBoard,
@@ -895,7 +896,7 @@ const Medium = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start sm:justify-around min-h-screen py-8 z-[-999] overflow-hidden scrollbar-hide mt-16 md:mt-24 xl:mt-0">
+    <div className="flex flex-col items-center justify-start sm:justify-around min-h-screen py-8 overflow-hidden scrollbar-hide mt-16 md:mt-24 xl:mt-0">
       <div className="flex flex-col sm:flex-row gap-4 sm:gap-2 md:gap-16 mb-8 sm:mb-12">
         {/* Computer status panel */}
         <div
