@@ -660,7 +660,7 @@ const BaghChal = () => {
                     <div className="font-semibold ml-10 ">
                         Computer
                     </div>
-                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/2</div>
+                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/1</div>
                 </div>
 
                 {/* Player status panel */}

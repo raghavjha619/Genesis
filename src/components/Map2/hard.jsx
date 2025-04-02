@@ -307,7 +307,9 @@ const Medium = () => {
 
     // Place Ravan at the corners
 
-    initialBoard[0][5] = "tiger";
+    initialBoard[2][3] = "tiger";
+    initialBoard[2][7] = "tiger";
+   
     
    
 
@@ -711,7 +713,9 @@ const Medium = () => {
 
     // Place Ravan at the corners
 
-    initialBoard[0][5] = "tiger";
+    initialBoard[2][3] = "tiger";
+    initialBoard[2][7] = "tiger";
+   
     
 
     setGameState({
@@ -909,7 +913,7 @@ const Medium = () => {
         >
           <div className="font-semibold ml-10 ">Computer</div>
           <div className="font-semibold mr-10">
-            Killed: {gameState.goatsCaptured}/4
+            Killed: {gameState.goatsCaptured}/2
           </div>
         </div>
 
