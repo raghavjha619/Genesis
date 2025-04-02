@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { cn } from "../lib/util";
 import { toast } from "sonner";
 import { RefreshCw } from "lucide-react";
-import ravan from "../../assets/ravan.svg";
+import ravan from "../../assets/meghnatha_new.svg";
 import hanuman from "../../assets/hanuman.svg";
 import innerbutton from "../../assets/innerbutton.png";
-import tigerWon from "../../assets/ravan_laugh3.mp3";
+import tigerWon from "../../assets/meghnath.mp3";
 import goatWin from "../../assets/goat_win.mp3";
 import kill from "../../assets/tiger_kill1.mp3";
 import { useSound } from "../SoundContext";
@@ -804,7 +804,7 @@ const Medium = () => {
             onClick={() => handlePointClick([row, col])}
           >
             {piece === "tiger" ? (
-              <img src={ravan} alt="ravan" width={40} height={40} />
+              <img src={ravan} alt="ravan" className="w-14 h-14 md:w-20 md:h-20  " />
             ) : (
               <img src={hanuman} alt="hanuman" width={40} height={40} />
             )}

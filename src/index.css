@@ -95,8 +95,9 @@
   }
 
   .piece-tiger {
-    @apply bg-game-tiger w-14 h-14 sm:w-14 sm:h-14 lg:w-16 lg:h-16 max-sm:w-8 max-sm:h-8;
+    @apply bg-[#d82222] w-14 h-14 sm:w-14 sm:h-14 lg:w-16 lg:h-16 max-sm:w-8 max-sm:h-8;
   }
+
   
   .piece-goat {
     @apply bg-game-goat w-14 h-14 sm:w-14 sm:h-14 lg:w-16 lg:h-16 max-sm:w-8 max-sm:h-8;
