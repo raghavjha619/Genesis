@@ -10,11 +10,11 @@ import { useGSAP } from "@gsap/react";
 import { cn } from "../lib/util";
 import { toast } from "sonner";
 import { RefreshCw } from "lucide-react";
-import ravan from "../../assets/ravan.svg";
+import ravan from "../../assets/kubhkarana.svg";
 import hanuman from "../../assets/hanuman.svg";
 import ".././ui/border.css";
 import innerbutton from "../../assets/innerbutton.png";
-import tigerWon from "../../assets/ravan_laugh2.mp3";
+import tigerWon from "../../assets/ravan_laugh1.mp3";
 import goatWin from "../../assets/goat_win.mp3";
 import kill from "../../assets/tiger_kill1.mp3";
 import { useSound } from "../SoundContext";
@@ -161,14 +161,6 @@ const getMiddlePosition = (pos1, pos2) => {
   }
   return null;
 };
-// const playSound = (soundFile) => {
-//     if (soundFile) {
-//         const audio = new Audio(soundFile);
-//         audio.play().catch(error => console.error('Sound playback error:', error));
-//     }
-// };
-// const {isMuted} = useSound();
-
 const BaghChal = () => {
   // console.log(useSound());
   const { isMuted } = useSound();
