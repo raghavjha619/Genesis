@@ -4,7 +4,7 @@ import EasyGame from "../../components/Map1/easy.jsx";
 import { Button } from "../../components/ui/Button.jsx";
 import bgImage from "../../assets/Frame.jpg";
 import { useSound } from "../../components/SoundContext.jsx";
-import sample from "../../assets/ravan.svg";
+import sample from "../../assets/ravan_satnsing_with_text.svg";
 
 const Indexeasy = () => {
   const { isMuted, toggleMute } = useSound(); // Get global mute state
@@ -89,7 +89,7 @@ const Indexeasy = () => {
         {/* SVG Popup (Appears from Bottom) */}
         <div
           ref={popupRef}
-          className="fixed left-72 transform -translate-x-1/2 transition-all duration-500 ease-in-out z-[999999]"
+          className="fixed left-72 top-[450px] transform -translate-x-1/2 transition-all duration-500 ease-in-out z-[999999]"
           style={{
             bottom: showPopup ? "10%" : "-100%", // Pops up from bottom smoothly
             opacity: showPopup ? 1 : 0, // Fade in effect
@@ -98,7 +98,7 @@ const Indexeasy = () => {
           <img
             src={sample}
             alt="Ravan"
-            className="w-48 h-48 md:w-64 md:h-64 shadow-lg rounded-lg border-4 border-yellow-400 bg-white"
+            className="w-48 h-48 md:w-[600px] md:h-[600px]"
           />
         </div>
       </div>
