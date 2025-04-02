@@ -17,45 +17,45 @@ const SOUNDS = {
 };
 
 const BOARD_SIZE = 11;
-const MAX_GOATS = 15;
-const Ravan_COUNT = 3;
+const MAX_GOATS = 10;
+const Ravan_COUNT = 2;
 //first commit
 const BOARD_LAYOUT = [
     // Top row
 
-    { position: [0, 5], connections: [[1, 3], [1, 6], [1, 4], [1, 7]] },
+    { position: [0, 5], connections: [ [1, 6], [1, 4]] },
 
     // Second row
-    { position: [1, 0], connections: [[1, 3], [2, 0]] },
+    { position: [1, 0], connections: [[2, 0],[1,4]] },
 
-    { position: [1, 3], connections: [[1, 0], [2, 2], [1, 4], [0, 5]] },
-    { position: [1, 4], connections: [[0, 5], [1, 3], [1, 6], [2, 3]] },
-    { position: [1, 6], connections: [[0, 5], [1, 4], [1, 7], [2, 7]] },
-    { position: [1, 7], connections: [[0, 5], [1, 6], [1, 10], [2, 8]] },
-    { position: [1, 10], connections: [[1, 7], [2, 10]] },
+    
+    { position: [1, 4], connections: [[0, 5], [1, 6], [1,0],[2, 3]] },
+    { position: [1, 6], connections: [[0, 5], [1, 4],  [2, 7],[1,10]] },
+    
+    { position: [1, 10], connections: [ [2, 10],[1,6]] },
 
 
     // Middle row
-    { position: [2, 0], connections: [[1, 0], [2, 2], [3, 0]] },
-    { position: [2, 2], connections: [[1, 3], [2, 0], [2, 3], [3, 1]] },
-    { position: [2, 3], connections: [[1, 4], [2, 2], [3, 2], [2, 7]] },
-    { position: [2, 7], connections: [[1, 6], [2, 8], [3, 8], [2, 3]] },
-    { position: [2, 8], connections: [[1, 7], [2, 7], [3, 9], [2, 10]] },
-    { position: [2, 10], connections: [[1, 10], [2, 8], [3, 10]] },
+    { position: [2, 0], connections: [[1, 0], [2,3], [3, 0]] },
+    
+    { position: [2, 3], connections: [[1, 4], [2,0], [3, 2], [2, 7]] },
+    { position: [2, 7], connections: [[1, 6],  [3, 8], [2, 3],[2,10]] },
+   
+    { position: [2, 10], connections: [[1, 10],  [3, 10],[2,7]] },
 
     // Fourth row
-    { position: [3, 0], connections: [[2, 0], [3, 1]] },
-    { position: [3, 1], connections: [[3, 0], [4, 0], [2, 2], [3, 2]] },
-    { position: [3, 2], connections: [[4, 1], [3, 1], [2, 3], [3, 8]] },
-    { position: [3, 8], connections: [[2, 7], [3, 9], [4, 9], [3, 2]] },
-    { position: [3, 9], connections: [[2, 8], [3, 8], [3, 10]] },
-    { position: [3, 10], connections: [[2, 10], [3, 9]] },
+    { position: [3, 0], connections: [[2, 0],[3,2]] },
+    
+    { position: [3, 2], connections: [[4, 1],  [2, 3], [3, 8],[3,0]] },
+    { position: [3, 8], connections: [[2, 7], [4, 9], [3, 2],[3,10]] },
+    
+    { position: [3, 10], connections: [[2, 10],[3,8]] },
 
     // Bottom row
-    { position: [4, 0], connections: [[3, 1], [4, 1]] },
-    { position: [4, 1], connections: [[4, 0], [3, 2], [4, 9]] },
-    { position: [4, 9], connections: [[3, 8], [4, 10], [4, 1]] },
-    { position: [4, 10], connections: [[4, 9], [3, 9]] },
+    
+    { position: [4, 1], connections: [ [3, 2], [4, 9]] },
+    { position: [4, 9], connections: [[3, 8], [4, 1]] },
+    
 
 ];
 
@@ -78,51 +78,74 @@ const positionInList = (pos, list) => {
 };
 
 // Find the middle position between two positions
+// Function to get the middle position for tiger jumps
 const getMiddlePosition = (pos1, pos2) => {
-    // Find the middle position based on the layout and connections
-    if (
-        pos1[0] === 1 && pos1[1] === 3 && pos2[0] === 1 && pos2[1] === 6
-    ) {
+    const [row1, col1] = pos1;
+    const [row2, col2] = pos2;
+
+    // Explicit checks for all possible cases based on BOARD_LAYOUT
+    if ((row1 === 0 && col1 === 5 && row2 === 2 && col2 === 3) ||
+        (row1 === 2 && col1 === 3 && row2 === 0 && col2 === 5)) {
         return [1, 4];
     }
-    if (
-        pos1[0] === 0 && pos1[1] === 5 && pos2[0] === 2 && pos2[1] === 2
-    ) {
-        return [1, 3];
+
+    if ((row1 === 0 && col1 === 5 && row2 === 2 && col2 === 7) ||
+        (row1 === 2 && col1 === 7 && row2 === 0 && col2 === 5)) {
+        return [1, 6];
     }
-    const isValidConnection = (start, middle, end) => {
-        // Check if `start` is connected to `middle` and `middle` is connected to `end`
-        return BOARD_LAYOUT.some((point) => {
-            if (point.position[0] === start[0] && point.position[1] === start[1]) {
-                return point.connections.some(
-                    (conn) =>
-                        conn[0] === middle[0] &&
-                        conn[1] === middle[1] &&
-                        BOARD_LAYOUT.some(
-                            (midPoint) =>
-                                midPoint.position[0] === middle[0] &&
-                                midPoint.position[1] === middle[1] &&
-                                midPoint.connections.some(
-                                    (endConn) => endConn[0] === end[0] && endConn[1] === end[1]
-                                )
-                        )
-                );
-            }
-            return false;
-        });
-    };
-
-    // Iterate through all positions in the layout to find a valid middle position
-    for (const middlePoint of BOARD_LAYOUT) {
-        const middle = middlePoint.position;
-
-        // Check if the middle position is valid for the given `pos1` and `pos2`
-        if (isValidConnection(pos1, middle, pos2)) {
-            return middle;
+    if ((row1 === 2 && col1 === 3 && row2 === 2 && col2 === 10) ||
+    (row1 === 2 && col1 === 10 && row2 === 2 && col2 === 3)) {
+    return [2, 7];
+    }
+    if ((row1 === 1&& col1 === 0 && row2 === 1 && col2 === 6) ||
+    (row1 === 1 && col1 === 6 && row2 === 1 && col2 === 0)) {
+    return [1, 4];
+}
+if ((row1 === 1&& col1 === 4 && row2 === 1 && col2 === 10) ||
+(row1 === 1 && col1 === 10 && row2 === 1 && col2 === 4)) {
+return [1, 6];
+}
+if (row1 === 1 && col1 === 4 && row2 === 3 && col2 === 2 ||
+(row1 === 3 && col1 === 2 && row2 === 1 && col2 === 4)) {
+return [2, 3];
+}
+if (row1 === 2 && col1 === 0 && row2 === 2 && col2 === 7 ||
+    (row1 === 2 && col1 === 7 && row2 === 2 && col2 === 0)) {
+    return [2, 3];
+    }
+    if (row1 === 2 && col1 === 3 && row2 === 2 && col2 === 10 ||
+        (row1 === 2 && col1 === 10 && row2 === 2 && col2 === 3)) {
+        return [2, 7];
         }
-    }
+        if (row1 === 3 && col1 === 0 && row2 === 3 && col2 === 8 ||
+            (row1 === 3 && col1 === 8 && row2 === 3 && col2 === 0)) {
+            return [3, 2];
+            }
+            if (row1 === 2 && col1 === 3 && row2 === 4 && col2 === 1 ||
+                (row1 === 4 && col1 === 1 && row2 === 2 && col2 === 3)) {
+                return [3, 2];
+                }
+                if (row1 === 2 && col1 === 7 && row2 === 4 && col2 === 9 ||
+                    (row1 === 4 && col1 === 9 && row2 === 2 && col2 === 7)) {
+                    return [3, 8];
+                    }
+                    if (row1 === 3 && col1 === 2 && row2 === 3 && col2 === 10 ||
+                        (row1 === 3 && col1 === 10 && row2 === 3 && col2 === 2)) {
+                        return [3, 8];
+                        }
+                        if (row1 === 1 && col1 === 10 && row2 === 3 && col2 === 10 ||
+                            (row1 === 3 && col1 === 10 && row2 === 1 && col2 === 10)) {
+                            return [2, 10];
+                            }
+                            if (row1 === 1 && col1 === 0 && row2 === 3 && col2 === 0 ||
+                                (row1 === 3 && col1 === 0 && row2 === 1 && col2 === 0)) {
+                                return [2, 0];
+                                }
+                        
+ 
 
-    return null; // No valid middle position found
+    // No valid middle position detected
+    return null;
 };
 
 
@@ -154,9 +177,9 @@ const Medium = () => {
         const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
         // Place Ravan at the corners
-        initialBoard[0][5] = 'tiger';
-        initialBoard[4][0] = 'tiger';
-        initialBoard[4][10] = 'tiger';
+        
+        initialBoard[2][3] = 'tiger';
+        initialBoard[2][7] = 'tiger';
 
 
         setGameState(prev => ({
@@ -168,7 +191,7 @@ const Medium = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >= 5) {
+        if (gameState.goatsCaptured >= 4) {
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
@@ -258,25 +281,55 @@ const Medium = () => {
     };
 
     // Function to get diagonal moves
+    // Function to get diagonal moves
     const getDiagonalMoves = (position) => {
-        // Find the current position object in BOARD_LAYOUT
-        const currentNode = BOARD_LAYOUT.find(node =>
-            node.position[0] === position[0] && node.position[1] === position[1]
-        );
-
-        if (!currentNode) {
-            console.error("Invalid position:", position);
-            return []; // Return empty array if the position is not found
+        const [row, col] = position;
+    
+        // Special diagonal moves for specific positions according to BOARD_LAYOUT
+        const diagonalMap = {
+            '0,5': [[1, 4], [1, 6]],
+    
+            '1,0': [[2, 3]], 
+            '1,4': [[0, 5], [2, 3], [1, 0], [1, 6]], 
+            '1,6': [[0, 5], [2, 7], [1, 4], [1, 10]], 
+            '1,10': [[2, 7], [2, 10], [1, 6]],
+    
+            '2,0': [[1, 0], [3, 2]], 
+            '2,3': [[1, 4], [3, 2], [2, 0], [2, 7]], 
+            '2,7': [[1, 6], [3, 8], [2, 3], [2, 10]], 
+            '2,10': [[1, 10], [3, 10], [2, 7]],
+    
+            '3,0': [[2, 0], [3, 2]],
+            '3,2': [[2, 3], [4, 1], [3, 0], [3, 8]], 
+            '3,8': [[2, 7], [4, 9], [3, 2], [3, 10]], 
+            '3,10': [[2, 10], [3, 8]],
+    
+            '4,1': [[3, 2], [4, 9]], 
+            '4,9': [[3, 8], [4, 1]]
+        };
+    
+        // Convert current position to a string key
+        const key = `${row},${col}`;
+    
+        // If the position exists in diagonalMap, return its specific diagonal connections
+        if (diagonalMap[key]) {
+            return diagonalMap[key];
         }
-
-        // Filter the connections to include only diagonal moves
-        const diagonalMoves = currentNode.connections.filter(([r, c]) => {
-            const isDiagonal = Math.abs(r - position[0]) === 1 && Math.abs(c - position[1]) === 1;
-            return isDiagonal;
-        });
-
-        return diagonalMoves;
+    
+        // Default general diagonals (only used if no specific rule in BOARD_LAYOUT)
+        const possibleDiagonals = [
+            [row - 1, col - 1], // Top-left
+            [row - 1, col + 1], // Top-right
+            [row + 1, col - 1], // Bottom-left
+            [row + 1, col + 1]  // Bottom-right
+        ];
+    
+        // Return diagonals that are within the bounds of the board
+        return possibleDiagonals.filter(([r, c]) => r >= 0 && r < 5 && c >= 0 && c <= 10);
     };
+    
+    
+    
 
     // Handle piece selection and movement
     const handlePointClick = (position) => {
@@ -465,9 +518,9 @@ const Medium = () => {
         const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
         // Place Ravan at the corners
-        initialBoard[0][5] = 'tiger';
-        initialBoard[4][0] = 'tiger';
-        initialBoard[4][10] = 'tiger';
+        
+        initialBoard[2][3] = 'tiger';
+        initialBoard[2][7] = 'tiger';
 
 
         setGameState({
@@ -645,7 +698,7 @@ const Medium = () => {
                     <div className="font-semibold ml-10 ">
                         Computer
                     </div>
-                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/5</div>
+                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/4</div>
                 </div>
 
                 {/* Player status panel */}

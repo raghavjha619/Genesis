@@ -86,7 +86,7 @@ const Home = () => {
               </h2>
 
               {/* Game Rules Content */}
-              <div className="space-y-6 sm:text-xl text-[#964B00] font-medium ">
+              <div className="space-y-6 sm:text-xl text-[#1c3d0a] font-medium ">
                 <p className="">
                   Vijaypath is a strategic board game played on a grid, where
                   two sides compete with distinct roles and objectives.
