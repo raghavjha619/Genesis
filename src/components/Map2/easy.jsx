@@ -17,8 +17,8 @@ const SOUNDS = {
 };
 
 const BOARD_SIZE = 11;
-const MAX_GOATS = 10;
-const Ravan_COUNT = 2;
+const MAX_GOATS = 5;
+const Ravan_COUNT = 1;
 //first commit
 const BOARD_LAYOUT = [
   // Top row
@@ -307,8 +307,8 @@ const Medium = () => {
 
     // Place Ravan at the corners
 
-    initialBoard[2][3] = "tiger";
-    initialBoard[2][7] = "tiger";
+    initialBoard[0][5] = "tiger";
+    
    
 
     setGameState((prev) => ({
@@ -320,7 +320,7 @@ const Medium = () => {
   // Check if the game is over
   useEffect(() => {
     // Tiger wins if they capture 5 or more goats
-    if (gameState.goatsCaptured >= 3) {
+    if (gameState.goatsCaptured >= 2) {
       setGameState((prev) => ({
         ...prev,
         gameOver: true,
@@ -711,8 +711,8 @@ const Medium = () => {
 
     // Place Ravan at the corners
 
-    initialBoard[2][3] = "tiger";
-    initialBoard[2][7] = "tiger";
+    initialBoard[0][5] = "tiger";
+    
 
     setGameState({
       board: initialBoard,
@@ -909,7 +909,7 @@ const Medium = () => {
         >
           <div className="font-semibold ml-10 ">Computer</div>
           <div className="font-semibold mr-10">
-            Killed: {gameState.goatsCaptured}/2
+            Killed: {gameState.goatsCaptured}/4
           </div>
         </div>
 

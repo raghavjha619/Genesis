@@ -12,8 +12,8 @@ import { useSound } from "../SoundContext";
 
 
 const BOARD_SIZE = 5;
-const MAX_GOATS = 15;
-const Ravan_COUNT = 3;
+const MAX_GOATS = 10;
+const Ravan_COUNT = 2;
 const SOUNDS = {
     tigerKill: kill,
     goatWon:  goatWin,
@@ -153,8 +153,7 @@ const GameBoard = () => {
         // Place Ravan at the corners
         initialBoard[0][0] = 'tiger';
         initialBoard[0][4] = 'tiger';
-        initialBoard[4][0] = 'tiger';
-     
+       
 
         setGameState(prev => ({
             ...prev,
@@ -165,7 +164,7 @@ const GameBoard = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >= 5) {
+        if (gameState.goatsCaptured >= 2) {
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
@@ -464,8 +463,7 @@ const GameBoard = () => {
         // Place Ravan at the corners
         initialBoard[0][0] = 'tiger';
         initialBoard[0][4] = 'tiger';
-        initialBoard[4][0] = 'tiger';
-        
+       
 
         setGameState({
             board: initialBoard,
