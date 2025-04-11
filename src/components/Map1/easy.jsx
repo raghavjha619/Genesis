@@ -1,61 +1,55 @@
-import React, { useState, useEffect } from 'react';
-import { cn } from '../components/lib/util';
+import React, { createContext, useState, useContext, useEffect, useRef  } from "react";
+import gsap from "gsap";
+import { cn } from '../lib/util';
 import { toast } from 'sonner';
 import { RefreshCw } from 'lucide-react';
-import ravan from "../assets/ravan.svg"
-import hanuman from "../assets/hanuman.svg"
-import innerbutton from "../assets/innerbutton.png"
-import tigerWon from '../assets/ravan_laugh2.mp3';
-import goatWin from "../assets/goat_win.mp3";
-import kill from "../assets/tiger_kill1.mp3" ;
-import { useSound } from "./SoundContext";
+import ravan from "../../assets/ravan.svg"
+import hanuman from "../../assets/hanuman.svg"
+import '.././ui/border.css'
+import innerbutton from "../../assets/innerbutton.png"
+import tigerWon from '../../assets/ravan_laugh2.mp3';
+import goatWin from "../../assets/goat_win.mp3";
+import kill from "../../assets/tiger_kill1.mp3" ;
+import { useSound } from "../SoundContext";
 
+
+const BOARD_SIZE = 7;
+const MAX_GOATS = 5;
+const Ravan_COUNT = 1;
 const SOUNDS = {
     tigerKill: kill,
     goatWon:  goatWin,
     tigerWin: tigerWon,
 };
-
-const BOARD_SIZE = 11;
-const MAX_GOATS = 15;
-const Ravan_COUNT = 3;
 //first commit
 const BOARD_LAYOUT = [
     // Top row
 
-    { position: [0, 5], connections: [[1, 3], [1, 6], [1, 4], [1, 7]] },
+
+
+    { position: [0, 3], connections: [[1, 2], [1, 3], [1, 4]] },
+
 
     // Second row
-    { position: [1, 0], connections: [[1, 3], [2, 0]] },
 
-    { position: [1, 3], connections: [[1, 0], [2, 2], [1, 4], [0, 5]] },
-    { position: [1, 4], connections: [[0, 5], [1, 3], [1, 6], [2, 3]] },
-    { position: [1, 6], connections: [[0, 5], [1, 4], [1, 7], [2, 7]] },
-    { position: [1, 7], connections: [[0, 5], [1, 6], [1, 10], [2, 8]] },
-    { position: [1, 10], connections: [[1, 7], [2, 10]] },
 
+    { position: [1, 2], connections: [[0, 3], [1, 3], [2, 1]] },
+    { position: [1, 3], connections: [[0, 3], [1, 2], [1, 4], [2, 3]] },
+    { position: [1, 4], connections: [[0, 3], [1, 3], [2, 5]] },
 
     // Middle row
-    { position: [2, 0], connections: [[1, 0], [2, 2], [3, 0]] },
-    { position: [2, 2], connections: [[1, 3], [2, 0], [2, 3], [3, 1]] },
-    { position: [2, 3], connections: [[1, 4], [2, 2], [3, 2], [2, 7]] },
-    { position: [2, 7], connections: [[1, 6], [2, 8], [3, 8], [2, 3]] },
-    { position: [2, 8], connections: [[1, 7], [2, 7], [3, 9], [2, 10]] },
-    { position: [2, 10], connections: [[1, 10], [2, 8], [3, 10]] },
+
+    { position: [2, 1], connections: [[1, 2], [2, 3], [3, 0]] },
+
+    { position: [2, 3], connections: [[1, 3], [2, 1], [2, 5], [3, 3]] },
+    { position: [2, 5], connections: [[1, 4], [2, 3], [3, 6]] },
 
     // Fourth row
-    { position: [3, 0], connections: [[2, 0], [3, 1]] },
-    { position: [3, 1], connections: [[3, 0], [4, 0], [2, 2], [3, 2]] },
-    { position: [3, 2], connections: [[4, 1], [3, 1], [2, 3], [3, 8]] },
-    { position: [3, 8], connections: [[2, 7], [3, 9], [4, 9], [3, 2]] },
-    { position: [3, 9], connections: [[2, 8], [3, 8], [3, 10]] },
-    { position: [3, 10], connections: [[2, 10], [3, 9]] },
+    { position: [3, 0], connections: [[2, 1], [3, 3]] },
 
-    // Bottom row
-    { position: [4, 0], connections: [[3, 1], [4, 1]] },
-    { position: [4, 1], connections: [[4, 0], [3, 2], [4, 9]] },
-    { position: [4, 9], connections: [[3, 8], [4, 10], [4, 1]] },
-    { position: [4, 10], connections: [[4, 9], [3, 9]] },
+    { position: [3, 3], connections: [[2, 3], [3, 0], [3, 6]] },
+    { position: [3, 6], connections: [[2, 5], [3, 3]] },
+
 
 ];
 
@@ -79,56 +73,34 @@ const positionInList = (pos, list) => {
 
 // Find the middle position between two positions
 const getMiddlePosition = (pos1, pos2) => {
-    // Find the middle position based on the layout and connections
-    if (
-        pos1[0] === 1 && pos1[1] === 3 && pos2[0] === 1 && pos2[1] === 6
-    ) {
-        return [1, 4];
+    // Only consider positions that are two steps away (for tiger jumps)
+    if (Math.abs(pos1[0] - pos2[0]) === 2 && pos1[1] === pos2[1]) {
+        return [Math.min(pos1[0], pos2[0]) + 1, pos1[1]];
     }
-    if (
-        pos1[0] === 0 && pos1[1] === 5 && pos2[0] === 2 && pos2[1] === 2
-    ) {
-        return [1, 3];
+    if (Math.abs(pos1[1] - pos2[1]) === 2 && pos1[0] === pos2[0]) {
+        return [pos1[0], Math.min(pos1[1], pos2[1]) + 1];
     }
-    const isValidConnection = (start, middle, end) => {
-        // Check if `start` is connected to `middle` and `middle` is connected to `end`
-        return BOARD_LAYOUT.some((point) => {
-            if (point.position[0] === start[0] && point.position[1] === start[1]) {
-                return point.connections.some(
-                    (conn) =>
-                        conn[0] === middle[0] &&
-                        conn[1] === middle[1] &&
-                        BOARD_LAYOUT.some(
-                            (midPoint) =>
-                                midPoint.position[0] === middle[0] &&
-                                midPoint.position[1] === middle[1] &&
-                                midPoint.connections.some(
-                                    (endConn) => endConn[0] === end[0] && endConn[1] === end[1]
-                                )
-                        )
-                );
-            }
-            return false;
-        });
-    };
-
-    // Iterate through all positions in the layout to find a valid middle position
-    for (const middlePoint of BOARD_LAYOUT) {
-        const middle = middlePoint.position;
-
-        // Check if the middle position is valid for the given `pos1` and `pos2`
-        if (isValidConnection(pos1, middle, pos2)) {
-            return middle;
-        }
+    if (Math.abs(pos1[0] - pos2[0]) === 2 && Math.abs(pos1[1] - pos2[1]) === 2) {
+        return [Math.min(pos1[0], pos2[0]) + 1, Math.min(pos1[1], pos2[1]) + 1];
     }
-
-    return null; // No valid middle position found
+    if (Math.abs(pos1[1] - pos2[1]) === 4 && pos1[0] === pos2[0]) {
+        return [pos1[0], 3];
+    }
+    if (Math.abs(pos1[1] - pos2[1]) === 6 && pos1[0] === pos2[0]) {
+        return [pos1[0], 3];
+    }
+    return null;
 };
+// const playSound = (soundFile) => {
+//     if (soundFile) {
+//         const audio = new Audio(soundFile);
+//         audio.play().catch(error => console.error('Sound playback error:', error));
+//     }
+// };
+// const {isMuted} = useSound();
 
-
-
-const Medium = () => {
-
+const BaghChal = () => {
+    // console.log(useSound());
     const {isMuted} = useSound();
     const playSound = (soundFile) => {   
         if (isMuted === false && soundFile) { // Only play if not muted
@@ -136,8 +108,7 @@ const Medium = () => {
             audio.play().catch(error => console.error('Sound playback error:', error));
         }
     };
-
-
+    
     const [gameState, setGameState] = useState({
         board: Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null)),
         currentPlayer: 'goat',
@@ -154,9 +125,7 @@ const Medium = () => {
         const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
         // Place Ravan at the corners
-        initialBoard[0][5] = 'tiger';
-        initialBoard[4][0] = 'tiger';
-        initialBoard[4][10] = 'tiger';
+        initialBoard[0][3] = 'tiger';
 
 
         setGameState(prev => ({
@@ -168,14 +137,14 @@ const Medium = () => {
     // Check if the game is over
     useEffect(() => {
         // Tiger wins if they capture 5 or more goats
-        if (gameState.goatsCaptured >= 3) {
+        if (gameState.goatsCaptured >= 2) {
+            playSound(SOUNDS.tigerWin);
             setGameState(prev => ({
                 ...prev,
                 gameOver: true,
                 winner: 'tiger'
             }));
-            playSound(SOUNDS.tigerWin);
-            toast.success("Ravan win! They captured 3 vanar veer.");
+            toast.success("Ravan win! They captured 5 goats.");
             return;
         }
 
@@ -203,6 +172,7 @@ const Medium = () => {
                     gameOver: true,
                     winner: 'goat'
                 }));
+                playSound(SOUNDS.goatWon);
                 toast.success("Goats win! Ravan are trapped.");
             }
         }
@@ -258,23 +228,26 @@ const Medium = () => {
 
     // Function to get diagonal moves
     const getDiagonalMoves = (position) => {
-        // Find the current position object in BOARD_LAYOUT
-        const currentNode = BOARD_LAYOUT.find(node =>
-            node.position[0] === position[0] && node.position[1] === position[1]
-        );
-
-        if (!currentNode) {
-            console.error("Invalid position:", position);
-            return []; // Return empty array if the position is not found
+        const [row, col] = position;
+        const diagonalMoves = [];
+        if (row == 2 && col == 3) {
+            return [[2, 1], [1, 3], [2, 5], [3, 3]];
+        }
+        if (row == 1 && col == 2) {
+            return [[0, 3], [2, 1], [1, 3]];
+        }
+        if (row == 1 && col == 4) {
+            return [[0, 3], [2, 5], [1, 3]]
         }
 
-        // Filter the connections to include only diagonal moves
-        const diagonalMoves = currentNode.connections.filter(([r, c]) => {
-            const isDiagonal = Math.abs(r - position[0]) === 1 && Math.abs(c - position[1]) === 1;
-            return isDiagonal;
-        });
+        const possibleDiagonals = [
+            [row - 1, col - 1], // Top-left
+            [row - 1, col + 1], // Top-right
+            [row + 1, col - 1], // Bottom-left
+            [row + 1, col + 1]  // Bottom-right
+        ];
 
-        return diagonalMoves;
+        return possibleDiagonals.filter(([r, c]) => r >= 0 && r < BOARD_SIZE && c >= 0 && c < BOARD_SIZE);
     };
 
     // Handle piece selection and movement
@@ -431,6 +404,7 @@ const Medium = () => {
             const middle = getMiddlePosition(from, to);
             if (middle) {
                 const [middleRow, middleCol] = middle;
+                // const {isMuted} = useSound();
                 if (newBoard[middleRow][middleCol] === 'goat') {
                     newBoard[middleRow][middleCol] = null;
                     goatsCaptured++;
@@ -455,49 +429,55 @@ const Medium = () => {
                 winner: 'goat'
             }));
             playSound(SOUNDS.goatWon);
-            toast.success("Goats win! Ravan are trapped.");
+            toast.success("Vanar veer win! Ravans are trapped.");
         }
     };
 
     // Reset game
     const resetGame = () => {
-        const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
+        setGameState(prevState => ({
+            ...prevState,
+            gameOver: false // Set gameOver false first to trigger re-render
+        }));
 
-        // Place Ravan at the corners
-        initialBoard[0][5] = 'tiger';
-        initialBoard[4][0] = 'tiger';
-        initialBoard[4][10] = 'tiger';
+        setTimeout(() => {
+            const initialBoard = Array(BOARD_SIZE).fill(null).map(() => Array(BOARD_SIZE).fill(null));
 
+            // Place Ravan's tigers at all four corners
+            initialBoard[0][3] = 'tiger';
 
-        setGameState({
-            board: initialBoard,
-            currentPlayer: 'goat',
-            selectedPiece: null,
-            goatsPlaced: 0,
-            goatsCaptured: 0,
-            possibleMoves: [],
-            gameOver: false,
-            winner: null
-        });
+            setGameState({
+                board: initialBoard,
+                currentPlayer: 'goat',
+                selectedPiece: null,
+                goatsPlaced: 0,
+                goatsCaptured: 0,
+                possibleMoves: [],
+                gameOver: false,
+                winner: null
+            });
 
-        toast("Game reset!");
+            toast("🔄 Game reset! Get ready for battle!");
+        }, 10); // Small delay to ensure re-render
     };
 
     // Render board point
-    const getBoardSize = () => {
-        const width = window.innerWidth;
-        if (width < 400) return 290; // Extra Small screens
-        if (width < 640) return 360; // Small screens
-        if (width < 768) return 480; // Medium screens
-        return 640; // Default large screens
-    };
-
     const renderBoardPoint = (position) => {
         const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamically set board size
 
         const margin = 40;
-        const verticalStretchFactor = 2.4; // Adjust for stretching
+        const verticalStretchFactor = 2; // Adjust for stretching
 
+        // Function to determine board size based on screen width
+        function getBoardSize() {
+            const width = window.innerWidth;
+            if (width < 400) return 290; // Xtra Small screens
+            if (width < 640) return 360; // Small screens
+            if (width < 768) return 480; // Medium screens
+            return 640; // Default large screens
+        }
+
+        // Listen for screen size changes
         useEffect(() => {
             const handleResize = () => setBoardSize(getBoardSize());
             window.addEventListener("resize", handleResize);
@@ -505,69 +485,106 @@ const Medium = () => {
         }, []);
 
         const [row, col] = position;
+        const pieceRef = useRef(null);
 
         // Calculate position based on triangular grid
         const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
         const y = margin + (row * (boardSize - 2 * margin) * verticalStretchFactor / (BOARD_SIZE - 1));
 
         const piece = gameState.board[row][col];
-        const isSelected = gameState.selectedPiece &&
+        const isSelected =
+            gameState.selectedPiece &&
             gameState.selectedPiece[0] === row &&
             gameState.selectedPiece[1] === col;
         const isPossibleMove = positionInList(position, gameState.possibleMoves);
+
+        useEffect(() => {
+            if (pieceRef.current) {
+                const rect = pieceRef.current.getBoundingClientRect(); // Get current position
+                const boardRect = pieceRef.current.parentElement.getBoundingClientRect(); // Get board position
+        
+                const currentX = rect.left - boardRect.left;
+                const currentY = rect.top - boardRect.top;
+        
+                gsap.fromTo(
+                    pieceRef.current,
+                    { x: currentX, y: currentY, opacity: 1, rotate: 0 }, // Start from the old board-relative position
+                    { x: x, y: y, duration: 1, ease: "power2.out", rotate: 360, opacity: 1 } // Move smoothly to new position
+                );
+            }
+        }, [x, y]);
+        
+        
 
         return (
             <React.Fragment key={`point-${row}-${col}`}>
                 {/* Board point */}
                 <div
                     className={cn(
-                        "board-point bg-[#91206ff2] border-2 border-[#E5B84B] sm:w-6 sm:h-6 w-4 h-4",
+                        "board-point bg-[#91206ff2] border-2 border-[#E5B84B] w-6 h-6",
                         isPossibleMove && "scale-125 bg-red-700 z-10"
                     )}
                     style={{
                         left: `${x}px`,
                         top: `${y}px`,
-                        boxShadow: isPossibleMove ? '0 0 8px 2px rgba(255, 255, 0, 0.5)' : 'none'
+                        boxShadow: isPossibleMove ? "0 0 8px 2px rgba(255, 255, 0, 0.5)" : "none",
                     }}
                     onClick={() => handlePointClick([row, col])}
                 />
 
                 {/* Piece */}
                 {piece && (
-                    <div
-                        className={cn(
-                            "piece",
-                            piece === 'tiger' ? "piece-tiger" : "piece-goat",
-                            isSelected && "shadow-lg ring-2 ring-yellow-300 ring-offset-2 ring-offset-transparent animate-bounce-soft"
-                        )}
-                        style={{
-                            left: `${x}px`,
-                            top: `${y}px`,
-                            zIndex: isSelected ? 20 : 10
-                        }}
-                        onClick={() => handlePointClick([row, col])}
-                    >
-                        {piece === 'tiger' ? <img src={ravan} alt="ravan" width={40} height={40} /> :
-                            <img src={hanuman} alt="hanuman" width={40} height={40} />}
-                    </div>
-                )}
+                <div
+                    ref={pieceRef} // Attach GSAP animation to this element
+                    className={cn(
+                        "piece",
+                        piece === "tiger" ? "piece-tiger" : "piece-goat",
+                        isSelected && "shadow-lg ring-2 ring-yellow-300 ring-offset-2 ring-offset-transparent"
+                    )}
+                    style={{
+                        position: "absolute",
+                        left: `${x}px`,
+                        top: `${y}px`,
+                        transform: "translate(-50%, -50%)",
+                        zIndex: isSelected ? 20 : 10,
+                    }}
+                    onClick={() => handlePointClick([row, col])}
+                >
+                    {piece === "tiger" ? (
+                        <img src={ravan} alt="ravan" className="w-14 h-14 md:w-20 md:h-20" />
+                    ) : (
+                        <img src={hanuman} alt="hanuman" className="w-14 h-14 md:w-20 md:h-20" />
+                    )}
+                </div>
+            )}
             </React.Fragment>
         );
     };
 
+    // Render board lines
     const renderBoardLines = () => {
-        const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamically set board size
-
+        
         const margin = 40;
-        const verticalStretchFactor = 2.4; // Adjust for stretching
+        const verticalStretchFactor = 2; // Adjust for stretching
+        
+        const [boardSize, setBoardSize] = useState(getBoardSize()); // Dynamically set board size
+        // Function to determine board size based on screen width
+        function getBoardSize() {
+            const width = window.innerWidth;
+            if (width < 400) return 290; // Xtra Small screens
+            if (width < 640) return 360; // Small screens
+            if (width < 768) return 480; // Medium screens
+            return 640; // Default large screens
+        }
 
+        // Listen for screen size changes
         useEffect(() => {
             const handleResize = () => setBoardSize(getBoardSize());
             window.addEventListener("resize", handleResize);
             return () => window.removeEventListener("resize", handleResize);
         }, []);
 
-        // Convert board position (like [2, 3]) to pixel position for SVG placement.
+        // Convert board position to pixel position for SVG placement
         const getPosition = (pos) => {
             const [row, col] = pos;
             const x = margin + (col * (boardSize - 2 * margin) / (BOARD_SIZE - 1));
@@ -599,8 +616,8 @@ const Medium = () => {
                                 key={`${lineId}-outline`}
                                 x1={from.x} y1={from.y}
                                 x2={to.x} y2={to.y}
-                                stroke="#e39c15" // Black outline
-                                strokeWidth="6" // Make it slightly thicker
+                                stroke="#e39c15"
+                                strokeWidth="6"
                                 strokeLinecap="round"
                             />
 
@@ -609,8 +626,8 @@ const Medium = () => {
                                 key={lineId}
                                 x1={from.x} y1={from.y}
                                 x2={to.x} y2={to.y}
-                                stroke="#fff" // White main line
-                                strokeWidth="2" // Keep it thinner
+                                stroke="#fff"
+                                strokeWidth="2"
                                 strokeLinecap="round"
                             />
                         </>
@@ -629,7 +646,6 @@ const Medium = () => {
     };
 
 
-
     return (
         <div className="flex flex-col items-center justify-start sm:justify-around min-h-screen py-8 overflow-hidden scrollbar-hide mt-16 md:mt-24 xl:mt-0">
             <div className='flex flex-col sm:flex-row gap-4 sm:gap-2 md:gap-16 mb-8 sm:mb-12'>
@@ -644,7 +660,7 @@ const Medium = () => {
                     <div className="font-semibold ml-10 ">
                         Computer
                     </div>
-                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/3</div>
+                    <div className="font-semibold mr-10">Killed: {gameState.goatsCaptured}/2</div>
                 </div>
 
                 {/* Player status panel */}
@@ -663,16 +679,36 @@ const Medium = () => {
                 </div>
             </div>
 
-
             {/* Game board */}
             <div className="box relative max-w-[90%] xxs:max-w-[96%] flex-col justify-center items-center mx-auto w-auto h-auto bg-[#f5e1c0] rounded-lg shadow-xl"
             >
+                
                 {/* Board lines */}
                 {renderBoardLines()}
 
                 {/* Board points and pieces */}
                 {BOARD_LAYOUT.map(point => renderBoardPoint(point.position))}
 
+                {/* Game over overlay */}
+                {gameState.gameOver && (
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center flex-col text-white rounded-lg animate-scale-in z-[9999] ">
+                        <h2 className="text-2xl font-bold mb-4 ">
+                            {gameState.winner === 'tiger' ? "Ravan Win!" : "Vanar Veer Win!"}
+                        </h2>
+                        <p className="mb-4">
+                            {gameState.winner === 'tiger'
+                                ? "Ravan captured 2 Vanar Veer"
+                                : "Ravan have been immobilized"}
+                        </p>
+                        <button
+                            className="flex items-center space-x-2 bg-green-500 text-game-background px-4 py-2 rounded-full hover:bg-opacity-90 transition-colors"
+                            onClick={resetGame}
+                        >
+                            <RefreshCw size={16} />
+                            <span>Play Again</span>
+                        </button>
+                    </div>
+                )}
 
                 {/* Instructions */}
                 <div className="my-2 text-amber-800 text-base text-center px-4">
@@ -686,31 +722,11 @@ const Medium = () => {
                         <p>Computer is thinking...</p>
                     )}
                 </div>
-
-                {/* Game over overlay */}
-                {gameState.gameOver && (
-                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center flex-col text-white rounded-lg animate-scale-in z-[9999] ">
-                        <h2 className="text-2xl font-bold mb-4 ">
-                            {gameState.winner === 'tiger' ? "Ravan Win!" : "Vanar veers Win!"}
-                        </h2>
-                        <p className="mb-4">
-                            {gameState.winner === 'tiger'
-                                ? "Ravan captured 10 Vanar veer"
-                                : "Ravan have been immobilized"}
-                        </p>
-                        <button
-                            className="flex items-center space-x-2 bg-green-500 text-game-background px-4 py-2 rounded-full hover:bg-opacity-90 transition-colors"
-                            onClick={resetGame}
-                        >
-                            <RefreshCw size={16} />
-                            <span>Play Again</span>
-                        </button>
-                    </div>
-                )}
             </div>
+
 
         </div>
     );
 };
 
-export default Medium;
+export default BaghChal;

@@ -186,7 +186,7 @@
 
 /* Custom Scrollbar for WebKit browsers (Chrome, Edge, Safari) */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 10px; /* Slim width */
+  width: 0px; /* Essentially hides it without disabling scrolling */
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -200,13 +200,22 @@
   border: 3px solid #f5e1c0; /* Blends into background */
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #8a6741; /* Darker shade on hover */
-}
-
 /* Firefox scrollbar */
 .custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #b08968 #f5e1c0;
+  scrollbar-width: thin; /* Makes it almost invisible */
+  scrollbar-color: transparent transparent; /* Fully hides thumb & track */
+}
+
+
+
+
+@keyframes jump {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }  /* 🦘 Jumping up */
+  100% { transform: translateY(0); }
+}
+
+.jump-animation {
+  animation: jump 0.3s ease-in-out;
 }
 
