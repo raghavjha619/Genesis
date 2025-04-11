@@ -3,9 +3,9 @@ import { cn } from '../lib/util';
 import { toast } from 'sonner';
 import { RefreshCw } from 'lucide-react';
 import ravan from "../../assets/ravan.svg"
+import tigerWon from '../../assets/ravan_laugh2.mp3';
 import hanuman from "../../assets/hanuman.svg"
 import innerbutton from "../../assets/innerbutton.png"
-import tigerWon from '../../assets/ravan_laugh2.mp3';
 import goatWin from "../../assets/goat_win.mp3";
 import kill from "../../assets/tiger_kill1.mp3" ;
 import { useSound } from "../SoundContext";
@@ -154,8 +154,7 @@ const GameBoard = () => {
         initialBoard[0][0] = 'tiger';
         initialBoard[0][4] = 'tiger';
         initialBoard[4][0] = 'tiger';
-        initialBoard[4][0] = 'tiger';
-
+        initialBoard[4][4] = 'tiger';
      
 
         setGameState(prev => ({
@@ -467,6 +466,7 @@ const GameBoard = () => {
         initialBoard[0][0] = 'tiger';
         initialBoard[0][4] = 'tiger';
         initialBoard[4][0] = 'tiger';
+        initialBoard[4][4] = 'tiger';
         
 
         setGameState({

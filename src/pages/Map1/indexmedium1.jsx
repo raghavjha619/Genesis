@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import MedGame from "../components/Map2/Medium.jsx";
-import { Button } from "../components/ui/Button.jsx";
+import MedGame from "../../components/Map1/medium.jsx";
+import { Button } from "../../components/ui/Button.jsx";
 import { RefreshCw, ArrowLeft, Info } from "lucide-react";
-import bgImage from "../assets/Frame.jpg";
+import bgImage from "../../assets/Frame.jpg";
 import { Link } from "react-router-dom";
-import { useSound } from "../components/SoundContext.jsx";
+import { useSound } from "../../components/SoundContext.jsx";
 
 const Indexmedium = () => {
   const { isMuted, toggleMute } = useSound();

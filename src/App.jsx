@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import Index from './pages/indexeasy'
+import Index from './pages/Map1/indexeasy1'
 import { Outlet } from 'react-router-dom'
 import { SoundProvider } from './components/SoundContext'
 function App() {

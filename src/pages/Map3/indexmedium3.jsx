@@ -1,10 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import HardGame from "../components/Map3/Gameboard.jsx";
-import { Button } from "../components/ui/Button.jsx";
+import HardGame from "../../components/Map3/medium.jsx";
+import { Button } from "../../components/ui/Button.jsx";
 import { RefreshCw, ArrowLeft } from "lucide-react";
-import bgImage from "../assets/Frame.jpg";
-import { useSound } from "../components/SoundContext.jsx";
+import bgImage from "../../assets/Frame.jpg";
+import { useSound } from "../../components/SoundContext.jsx";
 
 const Indexhard = () => {
     const { isMuted, toggleMute } = useSound(); // Get global mute state
