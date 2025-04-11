@@ -1,42 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
-import EasyGame from "../../components/Map1/easy.jsx";
+import React, { useState } from "react";
+import MedGame from "../../components/Map1/easy.jsx";
 import { Button } from "../../components/ui/Button.jsx";
+import { RefreshCw, ArrowLeft, Info } from "lucide-react";
 import bgImage from "../../assets/Frame.jpg";
+import { Link } from "react-router-dom";
 import { useSound } from "../../components/SoundContext.jsx";
-import sample from "../../assets/ravan_satnsing_with_text.svg";
 
-const Indexeasy = () => {
-  const { isMuted, toggleMute } = useSound(); // Get global mute state
-  const [showPopup, setShowPopup] = useState(false);
-  const popupRef = useRef(null);
-
-  // Automatically show the popup after a short delay
-  useEffect(() => {
-    setTimeout(() => {
-      setShowPopup(true);
-    }, 300); // Delay for smooth transition
-  }, []);
-
-  // Close popup when clicking outside of it
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        setShowPopup(false);
-      }
-    };
-
-    if (showPopup) {
-      document.addEventListener("mousedown", handleClickOutside);
-    } else {
-      document.removeEventListener("mousedown", handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [showPopup]);
-
+const Indexmedium = () => {
+  const { isMuted, toggleMute } = useSound();
   return (
     <>
       {/* Background Blur Image */}
@@ -52,7 +23,7 @@ const Indexeasy = () => {
             <Button
               variant="ghost"
               size="icon"
-              className="text-xl text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-[#e4d035] transition-colors"
+              className=" text-xl text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-[#e4d035] transition-colors"
             >
               Back
             </Button>
@@ -64,7 +35,7 @@ const Indexeasy = () => {
               variant="ghost"
               size="icon"
               onClick={toggleMute}
-              className="text-xl text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg py-5 px-1 hover:bg-[#e4d035] transition-colors w-auto"
+              className=" text-xl text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg py-5 px-1  hover:bg-[#e4d035] transition-colors w-auto "
             >
               {isMuted ? "Unmute" : "Mute"}
             </Button>
@@ -74,7 +45,7 @@ const Indexeasy = () => {
               variant="ghost"
               size="icon"
               onClick={() => window.location.reload()}
-              className="text-xl text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-[#e4d035] transition-colors"
+              className=" text-xl text-white border-2 border-[#BE6500] bg-[#E5B84B] shadow-lg rounded-lg p-5 px-8 hover:bg-[#e4d035] transition-colors"
             >
               Retry
             </Button>
@@ -83,27 +54,11 @@ const Indexeasy = () => {
 
         {/* Game Board Section */}
         <div className="container px-4 mx-auto relative z-10 flex justify-center items-center h-full">
-          <EasyGame />
-        </div>
-
-        {/* SVG Popup (Appears from Bottom) */}
-        <div
-          ref={popupRef}
-          className="fixed left-72 top-[450px] transform -translate-x-1/2 transition-all duration-500 ease-in-out z-[999999]"
-          style={{
-            bottom: showPopup ? "10%" : "-100%", // Pops up from bottom smoothly
-            opacity: showPopup ? 1 : 0, // Fade in effect
-          }}
-        >
-          <img
-            src={sample}
-            alt="Ravan"
-            className="w-48 h-48 md:w-[600px] md:h-[600px]"
-          />
+          <MedGame />
         </div>
       </div>
     </>
   );
 };
 
-export default Indexeasy;
+export default Indexmedium;

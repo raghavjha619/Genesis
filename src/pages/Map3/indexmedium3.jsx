@@ -1,13 +1,13 @@
-import React, { useState } from "react";
-import MedGame from "../../components/Map3/medium.jsx";
-import { Button } from "../../components/ui/Button.jsx";
-import { RefreshCw, ArrowLeft, Info } from "lucide-react";
-import bgImage from "../../assets/Frame.jpg";
+import React from "react";
 import { Link } from "react-router-dom";
+import HardGame from "../../components/Map3/medium.jsx";
+import { Button } from "../../components/ui/Button.jsx";
+import { RefreshCw, ArrowLeft } from "lucide-react";
+import bgImage from "../../assets/Frame.jpg";
 import { useSound } from "../../components/SoundContext.jsx";
 
-const Indexmedium = () => {
-  const { isMuted, toggleMute } = useSound();
+const Indexhard = () => {
+    const { isMuted, toggleMute } = useSound(); // Get global mute state
   return (
     <>
       {/* Background Blur Image */}
@@ -54,11 +54,11 @@ const Indexmedium = () => {
 
         {/* Game Board Section */}
         <div className="container px-4 mx-auto relative z-10 flex justify-center items-center h-full">
-          <MedGame />
+          <HardGame />
         </div>
       </div>
     </>
   );
 };
 
-export default Indexmedium;
+export default Indexhard;

@@ -3,11 +3,11 @@ import gsap from "gsap";
 import { cn } from '../lib/util';
 import { toast } from 'sonner';
 import { RefreshCw } from 'lucide-react';
-import ravan from "../../assets/kubhkarana.svg";
+import ravan from "../../assets/ravan.svg"
+import tigerWon from '../../assets/ravan_laugh2.mp3';
 import hanuman from "../../assets/hanuman.svg"
 import '.././ui/border.css'
 import innerbutton from "../../assets/innerbutton.png"
-import tigerWon from '../../assets/kumbhkarna.mp3';
 import goatWin from "../../assets/goat_win.mp3";
 import kill from "../../assets/tiger_kill1.mp3" ;
 import { useSound } from "../SoundContext";
@@ -551,7 +551,7 @@ const BaghChal = () => {
                     onClick={() => handlePointClick([row, col])}
                 >
                     {piece === "tiger" ? (
-                        <img src={ravan} alt="ravan" className="w-14 h-14 md:w-20 md:h-20  md:-top-3 -right-[3px] absolute" />
+                        <img src={ravan} alt="ravan" className="w-14 h-14 md:w-20 md:h-20 " />
                     ) : (
                         <img src={hanuman} alt="hanuman" className="w-14 h-14 md:w-20 md:h-20" />
                     )}
