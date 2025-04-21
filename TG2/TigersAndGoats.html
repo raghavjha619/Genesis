@@ -1,0 +1,151 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Tigers and Goats</title>
+    <style>
+        .Goat {
+            width: 40px;
+            height: 40px;
+        }
+
+            .Goat:hover, .Tiger :hover, .Empty :hover {
+                background-color: gray;
+            }
+    </style>
+
+    
+    <script src="js/UIUtility.js"></script>
+    <script src="js/TigersAndGoats.js"></script>
+    <script>
+        window.onload = function () {
+                window.currentGameState = new GameState();
+                window.isInProgress = false;
+                window.selectedId = -1;
+                window.MoveHistory = new HistoryStack();
+                UpdateUserInterface();
+        }
+    </script>
+</head>
+<body>
+    <div>
+        <table>
+            <tr>
+                <th align="left" style="padding-left:20px">
+                    <h1>Tigers and Goats</h1>
+                </th>
+                <th align="left">
+                    
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <div style="position:relative">
+                    <img src="images/Board.png" style="width:500px; height:400px; z-index:5" />
+                    <img id="100" class="Goat" src="images/Goat.png" style="position:absolute; top:20px; left:399px; z-index:10;" />
+                    <label style="position:absolute; z-index:20; top:60px; left:408px; width:40px; height:40px; font-family:Arial; font-size:32px; color:red;" id="OutSideGoats"></label>
+                    <img onclick="ProcessUserInput(this)" id="0" class="Goat" src="images/Goat.png" style="position:absolute; top:-11px; left:231px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="1" class="Goat" src="images/Goat.png" style="position:absolute; top:129px; left:24px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="2" class="Goat" src="images/Goat.png" style="position:absolute; top:129px; left:148px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="3" class="Goat" src="images/Goat.png" style="position:absolute; top:129px; left:204px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="4" class="Goat" src="images/Goat.png" style="position:absolute; top:129px; left:261px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="5" class="Goat" src="images/Goat.png" style="position:absolute; top:129px; left:310px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="6" class="Goat" src="images/Goat.png" style="position:absolute; top:129px; left:435px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="7" class="Goat" src="images/Goat.png" style="position:absolute; top:191px; left:24px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="8" class="Goat" src="images/Goat.png" style="position:absolute; top:191px; left:116px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="9" class="Goat" src="images/Goat.png" style="position:absolute; top:191px; left:193px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="10" class="Goat" src="images/Goat.png" style="position:absolute; top:191px; left:275px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="11" class="Goat" src="images/Goat.png" style="position:absolute; top:191px; left:342px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="12" class="Goat" src="images/Goat.png" style="position:absolute; top:191px; left:440px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="13" class="Goat" src="images/Goat.png" style="position:absolute; top:253px; left:24px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="14" class="Goat" src="images/Goat.png" style="position:absolute; top:253px; left:85px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="15" class="Goat" src="images/Goat.png" style="position:absolute; top:253px; left:183px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="16" class="Goat" src="images/Goat.png" style="position:absolute; top:253px; left:289px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="17" class="Goat" src="images/Goat.png" style="position:absolute; top:253px; left:376px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="18" class="Goat" src="images/Goat.png" style="position:absolute; top:253px; left:435px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="19" class="Goat" src="images/Goat.png" style="position:absolute; top:370px; left:20px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="20" class="Goat" src="images/Goat.png" style="position:absolute; top:370px; left:160px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="21" class="Goat" src="images/Goat.png" style="position:absolute; top:370px; left:313px; z-index:10;" />
+                    <img onclick="ProcessUserInput(this)" id="22" class="Goat" src="images/Goat.png" style="position:absolute; top:370px; left:440px; z-index:10;" />
+                    </div>
+                </td>
+                <td valign="top" style="width:600px">
+                    <table>
+                        <tr>
+                            <td>
+                                <p>Side to move: <span id="SideToMove">Tiger</span></p>
+                                <p>Game Status: <span id="Status"></span></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                Game Type:  <select id="ComputerSide" onchange="changeGameType(this)">
+                                                <optgroup label="Computer plays as:">
+                                                    <option value="tigers">Computer plays as tigers</option>
+                                                    <option value="goats">Computer plays as goats</option>
+                                                    <option value="computer">Computer vs Computer</option>
+                                                </optgroup>
+                                            </select>
+                                <br />
+                            </td>    
+                        </tr>
+                        <tr>
+                            <td style="width:300px">
+                                <h3>Tigers</h3>
+                                Algorithm:  <select id="TigersAlgorithm">
+                                                <optgroup label="Choose a search algorithm ...">
+                                                    <option value="expectimax">Expectimax</option>
+                                                    <option value="minimax">Minimax</option>
+                                                    <option value="alphabeta">Alpha-Beta Pruning</option>                                                    
+                                                    <option value="alphabetawithmemory">Alpha-Beta Pruning With Memory</option>
+                                                    <option value="scout">Scout</option>
+                                                    <option value="scoutwithttagent">Scout With Memory</option>
+                                                    <option value="mtdfagent">MTD(f)</option>
+                                                </optgroup>
+                                            </select>
+                                <br /><br />
+                                Depth Limit: <br /><input type="range" min="1" max="20" id="TigersDepth" value="20" /><br />
+                                Time Limit (seconds): <br /><input type="range" min="2" max="60" id="TigersTime" value="2" /><br />
+                                Current Depth: <span id="TigersCurrentDepth"></span> <br />
+                                Current Score: <span id="TigersCurrentScore"></span><br />
+                                Current Action: <span id="TigersCurrentAction"></span><br />
+                                Total Nodes Expanded: <span id="TigersNodesExpanded"></span><br />
+                                Leaf Nodes Reached/Depth: <span id="TigersLeafNodesReached"></span><br />
+                                Current Progress: <progress id="TigersCurrentProgress" max="100"></progress>
+                            </td>
+                            <td style="width:300px">
+                                <h3>Goats</h3>
+                                Algorithm:  <select id="GoatsAlgorithm" disabled>
+                                                <optgroup label="Choose a search algorithm ...">
+                                                    <option value="expectimax">Expectimax</option>
+                                                    <option value="minimax">Minimax</option>
+                                                    <option value="alphabeta">Alpha-Beta Pruning</option>
+                                                    <option value="alphabetawithmemory">Alpha-Beta Pruning With Memory</option>
+                                                    <option value="scout">Scout</option>
+                                                    <option value="scoutwithttagent">Scout With Memory</option>
+                                                    <option value="mtdfagent">MTD(f)</option>
+                                                </optgroup>
+                                            </select><br /><br />
+                                Depth Limit: <br /><input disabled type="range" min="1" max="20" id="GoatsDepth" value="20" /><br />
+                                Time Limit (seconds): <br /><input disabled type="range" min="2" max="60" id="GoatsTime" value="2" /><br />
+                                Current Depth: <span id="GoatsCurrentDepth"></span> <br />
+                                Current Score: <span id="GoatsCurrentScore"></span><br />
+                                Current Action: <span id="GoatsCurrentAction"></span><br />
+                                Nodes Expanded: <span id="GoatsNodesExpanded"></span><br />
+                                Leaf Nodes Reached/Depth: <span id="GoatsLeafNodesReached"></span><br />
+                                Current Progress: <progress id="GoatsCurrentProgress" max="100"></progress>
+                            </td>
+                        </tr>
+                    </table><br />                    
+                    <button onclick="startGame()" id="StartButton" type="button">Start</button>
+                    <button onclick="moveBack()" id="MoveBackButton" type="button">&lt;</button>
+                    <button onclick="moveNow()" id="MoveNowButton" type="button">Move Now!</button>
+                    <button onclick="moveForward()" id="MoveForwardButton" type="button">&gt;</button>
+                    <button onclick="stopGame()" id="StopButton" type="button">Stop</button>
+                    <button onclick="resetGame()" id="ResetButton" type="reset">Reset</button>
+                    <textarea readonly id="output" style="width:580px; height:100px"></textarea> 
+                </td>
+            </tr>     
+        </table>
+    </div>
+</html>
